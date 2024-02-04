@@ -69,6 +69,18 @@ yarn.lock
 # Optional eslint cache
 .eslintcache
 
+<<<<<<< HEAD
+=======
+# Optional stylelint cache
+.stylelintcache
+
+# Microbundle cache
+.rpt2_cache/
+.rts2_cache_cjs/
+.rts2_cache_es/
+.rts2_cache_umd/
+
+>>>>>>> edf2ae19c15734c134d2387d69fc14801e367a24
 # Optional REPL history
 .node_repl_history
 
@@ -79,30 +91,82 @@ yarn.lock
 .yarn-integrity
 
 # dotenv environment variable files
+<<<<<<< HEAD
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+=======
+.env
+.env.development.local
+.env.test.local
+.env.production.local
+.env.local
+>>>>>>> edf2ae19c15734c134d2387d69fc14801e367a24
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache
 
 # Next.js build output
+<<<<<<< HEAD
 .next/
 out/
 
 # Nuxt.js build / generate output
 .nuxt/
 dist/
+=======
+.next
+out
+
+# Nuxt.js build / generate output
+.nuxt
+dist
+>>>>>>> edf2ae19c15734c134d2387d69fc14801e367a24
 
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and not Next.js
+<<<<<<< HEAD
+=======
+# https://nextjs.org/blog/next-9-1#public-directory-support
+>>>>>>> edf2ae19c15734c134d2387d69fc14801e367a24
 # public
 
 # vuepress build output
 .vuepress/dist
 
+<<<<<<< HEAD
 # Serverless directories
 .serverless/
+=======
+# vuepress v2.x temp and cache directory
+.temp
+.cache
+
+# Docusaurus cache and generated files
+.docusaurus
+
+# Serverless directories
+.serverless/
+
+# FuseBox cache
+.fusebox/
+
+# DynamoDB Local files
+.dynamodb/
+
+# TernJS port file
+.tern-port
+
+# Stores VSCode versions used for testing VSCode extensions
+.vscode-test
+
+# yarn v2
+.yarn/cache
+.yarn/unplugged
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+>>>>>>> edf2ae19c15734c134d2387d69fc14801e367a24
