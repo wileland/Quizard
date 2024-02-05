@@ -2,7 +2,7 @@ import express from "express";
 import { ApolloServer } from "apollo-server-express";
 import path from "path";
 import { fileURLToPath } from "url";
-import { typeDefs, resolvers } from "./schema.js";
+import { typeDefs, resolvers } from "./schemas/schema.js";
 import { authMiddleware } from "./utils/auth.js";
 import connectDB from "./config/connection.js";
 
