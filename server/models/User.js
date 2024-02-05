@@ -14,7 +14,7 @@ class UserClass {
   }
 
   welcomeUser() {
-   console.log(`Welcome ${this.userName}`);
+    console.log(`Welcome ${this.userName}`);
   }
 }
 
@@ -27,17 +27,15 @@ function createUserSchema() {
       required: true,
       unique: true,
     },
-      userName: {
+    userName: {
       type: String,
-      minlength: , // TODO: discuss with team on length allowed
-      maxlength: ,// TODO: discuss with team on length allowed
       required: true,
       unique: true,
     },
     password: {
       type: String,
-      minlength: , // TODO: discuss with team on length allowed
-      maxlength: , // TODO: discuss with team on length allowed
+      minlength: 6, // TODO: discuss with team on length allowed
+      maxlength: 8, // TODO: discuss with team on length allowed
       required: true,
     },
     firstName: {
@@ -51,8 +49,8 @@ function createUserSchema() {
   });
 }
 
-userSchema.pre('save', async function(next) {
-  if (!this.isModified('password')){ 
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
     return next();
   }
 
@@ -60,8 +58,7 @@ userSchema.pre('save', async function(next) {
     const salt = await bcrypt.genSalt(hashNum);
     this.password = await bcrypt.hash(this.password, salt);
     next();
-  } 
-  catch (err) {
+  } catch (err) {
     next(err);
   }
 });
