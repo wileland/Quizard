@@ -4,7 +4,7 @@ const Home = () => {
   return (
     <div>
       <Link to="/login">
-        <button onClick={loginClick}>Login</button>
+        <button>Login</button>
       </Link>
     </div>
   );
