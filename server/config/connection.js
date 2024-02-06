@@ -1,17 +1,17 @@
 // server/config/connection.js
 
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(
-      process.env.MONGODB_URI || "mongodb://localhost/QuizardDB",
+      process.env.MONGODB_URI || 'mongodb://localhost/QuizardDB',
       {
         useNewUrlParser: true,
         useUnifiedTopology: true,
         useCreateIndex: true,
         useFindAndModify: false,
-      }
+      },
     );
     console.log(`MongoDB Connected: ${conn.connection.host}`);
   } catch (err) {

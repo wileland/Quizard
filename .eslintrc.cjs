@@ -22,5 +22,6 @@ module.exports = {
     sourceType: 'module',
   },
   rules: {
+    'linebreak-style': 0
   },
 };
