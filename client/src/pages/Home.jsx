@@ -1,11 +1,11 @@
-const Home = () => {
-  const loginClick = () => {
-    console.log("Login Clicked");
-  };
+import { Link } from "react-router-dom";
 
+const Home = () => {
   return (
     <div>
-      <button onClick={loginClick}>Login</button>
+      <Link to="/login">
+        <button onClick={loginClick}>Login</button>
+      </Link>
     </div>
   );
 };
