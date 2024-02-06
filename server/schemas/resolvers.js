@@ -1,7 +1,6 @@
-import  Quiz  from "../models/Quiz";
-import User  from "../models/User";
-import Profile  from '../models/Profile';
-import { signToken, AuthenticationError } from "../utils/auth";
+import  Quiz  from "../models/Quiz.js";
+import Profile  from '../models/Profile.js';
+import { signToken, AuthenticationError } from '../utils/auth.js';
 
 const resolvers = {
   Query: {
@@ -31,7 +30,7 @@ const resolvers = {
   },
   Mutation: {
     // create a new quiz
-    addQuiz: async (parent, { quizQuestions, quizAnswers }) => {
+    addQuiz: async (parent, { quizQuestion, quizAnswer }) => {
       return Quiz.create({ quizQuestion, quizAnswer });
     },
     // delete quiz
@@ -72,4 +71,4 @@ const resolvers = {
   },
 };
 
-module.exports = resolvers;
+export default resolvers;
