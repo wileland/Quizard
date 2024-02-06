@@ -1,10 +1,16 @@
-import { Schema, model } from "mongoose";
-import bcrypt from "bcrypt";
+import { Schema, model } from 'mongoose';
+import bcrypt from 'bcrypt';
 
 class UserClass {
-  constructor({ email, password, userName, firstName, lastName }) {
+  constructor({
+    email,
+    password,
+    userName,
+    firstName,
+    lastName,
+  }) {
     if (new.target === UserClass) {
-      throw new Error("Cannot directly call class !!");
+      throw new Error('Cannot directly call class !!');
     }
     this.email = email;
     this.password = password;
@@ -49,8 +55,10 @@ function createUserSchema() {
   });
 }
 
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) {
+const userSchema = createUserSchema();
+
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
     return next();
   }
 
@@ -63,7 +71,6 @@ userSchema.pre("save", async function (next) {
   }
 });
 
-const userSchema = createUserSchema();
-const User = model("User", userSchema);
+const User = model('User', userSchema);
 
 export default User;
