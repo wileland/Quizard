@@ -1,28 +1,46 @@
-import React from "react";
-import "./App.css";
-import { Routes, Route } from "react-router-dom";
+import React from 'react';
+import { ApolloClient, InMemoryCache, ApolloProvider, createHttpLink } from '@apollo/client';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
-import { useQuery } from "@apollo/client"; // Import the useQuery hook
-import { gql } from "@apollo/client"; // Import the gql template literal
-import { GET_USERS } from "./queries/userQueries"; // Import your user query
+import { setContext } from "@apollo/client/link/context";
+import "./App.css";
+
+// Create an HTTP link that connects to the GraphQL server.
+const httpLink = createHttpLink({
+  uri: '/graphql',
+});
+
+// Middleware to attach the authentication token to requests
+const authLink = setContext((_, { headers }) => {
+  // Get the authentication token from local storage if it exists
+  const token = localStorage.getItem('id_token');
+  // Return the headers to the context so httpLink can read them
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    }
+  };
+});
+
+// Instantiate Apollo Client with the created httpLink and cache
+const client = new ApolloClient({
+  link: authLink.concat(httpLink), // Chain it with the httpLink
+  cache: new InMemoryCache(),
+});
 
 function App() {
-  // Use the useQuery hook to fetch data
-  const { loading, error, data } = useQuery(GET_USERS);
-
+  // ApolloProvider should be the outermost component
   return (
-    <>
+    <ApolloProvider client={client}>
+      {/* No need to use <Router> again if it's already used in index.js/main.jsx */}
       <Routes>
-        <Route
-          path="/"
-          element={<Home data={data} />} // Pass the fetched user data to Home component
-        />
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
       </Routes>
-    </>
+    </ApolloProvider>
   );
 }
 
 export default App;
-
