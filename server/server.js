@@ -1,4 +1,3 @@
-
 import express from 'express';
 import { ApolloServer } from 'apollo-server-express';
 import path from 'path';
@@ -30,23 +29,27 @@ const server = new ApolloServer({
 });
 
 // Correct order: await server.start() before server.applyMiddleware()
-await server.start();
-server.applyMiddleware({ app });
+async function startServer() {
+  await server.start();
+  server.applyMiddleware({ app });
 
-// Serve React App
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/build/index.html'));
-});
+  // Serve React App
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+  });
 
-// Error handling
-app.use((err, req, res) => {
-  console.error(err);
-  res.status(500).send('Internal Server Error');
-});
+  // Error handling
+  app.use((err, req, res, next) => {
+    console.error(err);
+    res.status(500).send('Internal Server Error');
+  });
 
-// Start the server
-app.listen(PORT, () => {
-  console.log(
-    `Server is running on http://localhost:${PORT}${server.graphqlPath}`,
-  );
-});
+  // Start the server
+  app.listen(PORT, () => {
+    console.log(
+      `Server is running on http://localhost:${PORT}${server.graphqlPath}`
+    );
+  });
+}
+
+startServer();
