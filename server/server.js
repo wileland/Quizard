@@ -10,6 +10,9 @@ import connectDB from './config/connection.js';
 // Set __dirname in ES6 module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
+let lol;
+
+
 // Connect to MongoDB
 connectDB();
 
