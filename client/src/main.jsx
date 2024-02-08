@@ -1,25 +1,67 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
-import { BrowserRouter as Router } from 'react-router-dom';
-import App from './App'; // Import your App component
+// main.jsx
+import React from "react";
+import ReactDOM from "react-dom/client";
+import {
+  ApolloClient,
+  InMemoryCache,
+  ApolloProvider,
+  createHttpLink,
+} from "@apollo/client";
+import { setContext } from "@apollo/client/link/context";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import App from "./App.jsx";
+import Home from "./pages/Home.jsx";
+import Login from "./pages/Login.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
+import Signup from "./pages/Signup.jsx";
 
-// Set up Apollo Client with your GraphQL server endpoint
-const client = new ApolloClient({
-  uri: 'http://localhost:3001/graphql', // Ensure this URI is correct for your GraphQL server
-  cache: new InMemoryCache(), // Set up a new cache
+const httpLink = createHttpLink({
+  uri: "http://localhost:3001/graphql",
 });
 
-// Get the root element from the DOM
-const rootElement = document.getElementById('root');
+const authLink = setContext((_, { headers }) => {
+  const token = localStorage.getItem("id_token");
+  return {
+    headers: {
+      ...headers,
+      authorization: token ? `Bearer ${token}` : "",
+    },
+  };
+});
 
-// Render your app wrapped with ApolloProvider and Router
-ReactDOM.createRoot(rootElement).render(
-  <React.StrictMode>
-    <ApolloProvider client={client}>
-      <Router>
-        <App />
-      </Router>
-    </ApolloProvider>
-  </React.StrictMode>
+const client = new ApolloClient({
+  link: authLink.concat(httpLink),
+  cache: new InMemoryCache(),
+});
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+    errorElement: <Error />,
+    children: [
+      {
+        index: true,
+        element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/signup",
+        element: <Signup />,
+      },
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+      },
+    ],
+  },
+]);
+
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <ApolloProvider client={client}>
+    <RouterProvider router={router} />
+  </ApolloProvider>,
 );

@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const QUERY_PROFILES = gql`
   query allProfiles {
@@ -30,5 +30,13 @@ export const QUERY_ME = gql`
   }
 `;
 
-export const QUERY_QUIZZES = gql `
-  query `
+export const QUERY_QUIZZES = gql`
+  query allQuizzes {
+    quizzes {
+      title
+      questions
+      _id
+    }
+  }
+`;
+
