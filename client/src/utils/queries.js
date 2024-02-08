@@ -31,4 +31,21 @@ export const QUERY_ME = gql`
 `;
 
 export const QUERY_QUIZZES = gql `
-  query `
+  query allQuizzes {
+    quizzes {
+      title
+      questions
+      _id
+    }
+  } 
+`;
+
+export const QUERY_SINGLE_QUIZ = gql  `
+  query singleQuiz($quizId: ID!) {
+    quiz(quizId: $quizId) {
+      title
+      questions
+      _id
+    }
+  }
+`; 
