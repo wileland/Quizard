@@ -14,6 +14,7 @@ function Login() {
 
   return (
     <form onSubmit={handleFormSubmit}>
+      {/*Email*/}
       <div>
         <label></label>
         <input
@@ -23,6 +24,8 @@ function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
+
+      {/*Password*/}
       <div>
         <label></label>
         <input
@@ -32,6 +35,7 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
+
       <button type="submit">Login</button>
     </form>
   );
