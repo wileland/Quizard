@@ -39,4 +39,3 @@ export const QUERY_QUIZZES = gql`
     }
   }
 `;
-
