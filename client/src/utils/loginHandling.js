@@ -10,8 +10,9 @@ export const loginHandle = () => {
       //JWT token given here
       //
       //TODO: display console.log
-      //
+      console.log('Login was a success !!', data);
       //TODO: redirect user --> /dashboard
+      navigate('/dashboard');
 
     },
     onError: (err) => {

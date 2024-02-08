@@ -1,15 +1,14 @@
-import { useState } from "react";
 import React from "react";
-import { loginHandle } from "../utils/loginHandling";
+import { useState } from "react";
 
-function Login() {
-  const [email, setEmail] = useState(" ");
+function Signup() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { handleSubmit, loading, error } = loginHandle();
+  const [username, setUsername] = useState("");
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    handleSubmit(email, password);
+    //TODO: Create and bring in the function for sign in.
   };
 
   return (
@@ -23,6 +22,17 @@ function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
+
+      <div>
+        <label></label>
+        <input
+          type="text"
+          id="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
+
       <div>
         <label></label>
         <input
@@ -32,9 +42,10 @@ function Login() {
           onChange={(e) => setPassword(e.target.value)}
         />
       </div>
+
       <button type="submit">Login</button>
     </form>
   );
 }
 
-export default Login;
+export default Signup;
