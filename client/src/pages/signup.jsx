@@ -1,15 +1,17 @@
-import { useState } from "react";
 import React from "react";
-import { loginHandle } from "../utils/loginHandling";
+import { useState } from "react";
+import { signupHandling } from "../utils/signupHandling";
 
-function Login() {
-  const [email, setEmail] = useState(" ");
+function Signup() {
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const { handleSubmit, loading, error } = loginHandle();
+  const [username, setUsername] = useState("");
+  const { handleSignup, loading, error } = signupHandling();
 
   const handleFormSubmit = (event) => {
     event.preventDefault();
-    handleSubmit(email, password);
+    //TODO: Create and bring in the function for sign in.
+    handleSignup(email, username, password);
   };
 
   return (
@@ -24,7 +26,16 @@ function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
-
+      {/*Username*/}
+      <div>
+        <label></label>
+        <input
+          type="text"
+          id="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
       {/*Password*/}
       <div>
         <label></label>
@@ -41,4 +52,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default Signup;
