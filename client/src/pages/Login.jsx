@@ -1,30 +1,33 @@
 import { useState } from "react";
 import React from "react";
+import { useMutation } from "@apollo/client";
+import { loginHandle } from "../utils/loginHandling";
 
 function Login() {
   const [email, setEmail] = useState(" ");
   const [password, setPassword] = useState("");
+  const { handleSubmit, loading, error } = loginHandle();
 
-  const handleSubmit = (event) => {
+  const handleFormSubmit = (event) => {
     event.preventDefault();
-    console.log(`Logging in ${username}`);
+    handleSubmit(email, password);
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleFormSubmit}>
       <div>
         <label></label>
         <input
           type="text"
           id="email"
-          value={email}
+          value={email.trim()}
           onChange={(e) => setEmail(e.target.value)}
         />
       </div>
       <div>
         <label></label>
         <input
-          type="text"
+          type="password"
           id="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
