@@ -7,9 +7,9 @@ import { setContext } from "@apollo/client/link/context";
 import "./App.css";
 
 // Create an HTTP link that connects to the GraphQL server.
-const httpLink = createHttpLink({
-  uri: '/graphql',
-});
+// const httpLink = createHttpLink({
+//   uri: '/graphql',
+// });
 
 // Middleware to attach the authentication token to requests
 const authLink = setContext((_, { headers }) => {
@@ -26,7 +26,8 @@ const authLink = setContext((_, { headers }) => {
 
 // Instantiate Apollo Client with the created httpLink and cache
 const client = new ApolloClient({
-  link: authLink.concat(httpLink), // Chain it with the httpLink
+  uri: '/graphql',
+  // link: authLink.concat(httpLink), // Chain it with the httpLink
   cache: new InMemoryCache(),
 });
 
