@@ -25,4 +25,22 @@ export const LOGIN_USER = gql`
   }
 `;
 
+export const ADD_QUIZ = gql `
+  mutation addQuiz($quizQuestion: String!, $quizAnswer: String!) {
+    addQuiz(quizQuestion: $quizQuestion, quizAnswer: $quizAnswer) {
+      title
+      questions
+      _id
+    }
+  }
+`;
+
+export const REMOVE_QUIZ = gql `
+  mutation removeQuiz {
+    removeQuiz {
+      _id
+    }
+  }
+`;
+
 
