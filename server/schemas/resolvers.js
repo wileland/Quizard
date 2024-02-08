@@ -1,4 +1,4 @@
-import  Quiz  from "../models/Quiz.js";
+import  Quiz  from '../models/Quiz.js';
 import Profile  from '../models/Profile.js';
 import { signToken, AuthenticationError } from '../utils/auth.js';
 
@@ -12,7 +12,7 @@ const resolvers = {
     quiz: async (parent, { quizId }) => {
       return Quiz.findOne({ _id: quizId });
     },
-    // find all profiles
+    // // find all profiles
     profiles: async () => {
       return Profile.find();
     },
@@ -29,7 +29,7 @@ const resolvers = {
     },
   },
   Mutation: {
-    // create a new quiz
+    //create a new quiz
     addQuiz: async (parent, { quizQuestion, quizAnswer }) => {
       return Quiz.create({ quizQuestion, quizAnswer });
     },
@@ -37,9 +37,9 @@ const resolvers = {
     removeQuiz: async (parent, { quizId }) => {
       return Quiz.findOneAndDelete({ _id: quizId });
     },
-    // create new profile SIGN UP
-    addProfile: async (parent, { name, email, password }) => {
-      const profile = await Profile.create({ name, email, password });
+    //create new profile SIGN UP
+    addProfile: async (parent, { username, email, password }) => {
+      const profile = await Profile.create({ username, email, password });
       const token = signToken(profile);
 
       return { token, profile };

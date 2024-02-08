@@ -5,16 +5,19 @@ const typeDefs = `
     email: String
   }
 
-  type Auth {
-    token: ID!
-    profile: Profile
-  }
-
+  
   type Quiz {
     _id: ID
     title: String
     questions: [String]
   }
+  
+  type Auth {
+    token: ID!
+    profile: Profile
+  }
+
+
 
   type Query {
     profiles: [Profile]!
@@ -28,12 +31,20 @@ const typeDefs = `
   type Mutation {
     addProfile(name: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-
+  
     removeProfile: Profile
     addQuiz(quizQuestion: String!, quizAnswer: String!): Quiz
     removeQuiz: Quiz 
-
+  
   }
 `;
 
 export default typeDefs;
+
+
+
+
+
+
+
+
