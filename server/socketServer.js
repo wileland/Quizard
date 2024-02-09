@@ -1,16 +1,18 @@
-// socketServer.js
-import { Server } from 'socket.io';
-
+import { Server } from "socket.io";
+//import the Game state?
+//--> pass in the socket and state
+//
 const initializeSocketIo = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
-      origin: '*',
+      origin: "*",
     },
   });
 
-  io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id);
+  io.on("connection", (socket) => {
+    console.log("A user connected:", socket.id);
     // Add your Socket.IO event handling logic here
+    socket.emit("init", { data: "testing connection" });
   });
 
   return io;
