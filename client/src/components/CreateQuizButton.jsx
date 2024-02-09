@@ -5,7 +5,7 @@ const CreateQuizButton = () => {
   let history = useHistory();
 
   const handleCreateQuiz = () => {
-    history.push('./QuizForm.jsx'); 
+    history.push('./QuizForm'); 
   };
 
   return (
