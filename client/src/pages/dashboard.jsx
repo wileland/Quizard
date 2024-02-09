@@ -1,8 +1,8 @@
 import React from "react";
 import { useQuery } from "@apollo/client";
 import { QUERY_QUIZZES } from "../utils/queries";
-import QuizList from "../components/QuizList"; // Import the QuizList component
-import CreateQuizButton from "../components/CreateQuizButton.jsx"; // Import the CreateQuizButton component
+import QuizList from "../components/QuizList";
+import CreateQuizButton from "../components/CreateQuizButton.jsx";
 
 const Dashboard = () => {
   const { loading, error, data } = useQuery(QUERY_QUIZZES);
@@ -16,8 +16,8 @@ const Dashboard = () => {
     <main>
       <h1>Welcome to the Quizard's Dashboard</h1>
       <p>Here you can create, view, and manage your quizzes. Prepare to challenge the minds of your participants!</p>
-      <CreateQuizButton /> {/* This button can be used to conjure up a new quiz */}
-      {data && data.quizzes && <QuizList quizzes={data.quizzes} />} {/* Enchanted list of quizzes available for perusal and management */}
+      <CreateQuizButton />
+      {data && data.quizzes && <QuizList quizzes={data.quizzes} />}
     </main>
   );
 };
