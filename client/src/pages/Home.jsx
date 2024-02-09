@@ -12,6 +12,11 @@ const Home = () => {
     socket.on("init", handleInit);
   }, []);
 
+  const gameInputCode = document.getElementById("gameInputCode");
+  const joinBtn = document.getElementById("joinLobbyBtn");
+  //TODO: create a function called joinGame
+  joinBtn.addEventListener("click", joinGame);
+
   return (
     <div>
       <div>
