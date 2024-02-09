@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const QUERY_PROFILES = gql`
   query allProfiles {
@@ -30,22 +30,12 @@ export const QUERY_ME = gql`
   }
 `;
 
-export const QUERY_QUIZZES = gql `
+export const QUERY_QUIZZES = gql`
   query allQuizzes {
     quizzes {
       title
       questions
       _id
     }
-  } 
-`;
-
-export const QUERY_SINGLE_QUIZ = gql  `
-  query singleQuiz($quizId: ID!) {
-    quiz(quizId: $quizId) {
-      title
-      questions
-      _id
-    }
   }
-`; 
+`;
