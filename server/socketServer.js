@@ -12,7 +12,7 @@ const initializeSocketIo = (httpServer) => {
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
     // Add your Socket.IO event handling logic here
-    socket.emit("init", { data: "hello world" });
+    socket.emit("init", { data: "testing connection" });
   });
 
   return io;
