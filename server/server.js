@@ -88,7 +88,7 @@ const PORT = process.env.PORT || 3001;
 // Middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../client/build')));
+app.use(express.static(path.join(__dirname, '../client/dist')));
 
 // Apollo Server
 const server = new ApolloServer({
