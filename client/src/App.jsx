@@ -1,21 +1,12 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
-import Home from "./pages/Home";
-import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Signup from "./pages/Signup";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
+import Header from "./components/Header";
 
 function App() {
   return (
     <div>
-      <nav>
-        {/* Links for nav */}
-        <Link to="/">Home</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/signup">Signup</Link>
-        <Link to="/dashboard">Dashboard</Link>
-      </nav>
+      <Header />
       <main>
         <Outlet />
       </main>
