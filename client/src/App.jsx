@@ -11,7 +11,6 @@ function App() {
     <div>
       <nav>
         {/* Links for nav */}
-        <Link to="/">Home</Link>
         <Link to="/login">Login</Link>
         <Link to="/signup">Signup</Link>
         <Link to="/dashboard">Dashboard</Link>
