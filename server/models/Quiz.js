@@ -11,7 +11,7 @@ const quizSchema = new Schema({
   },
   questions: [
     {
-      questionText: String,
+      question: String,
       answerOptions: [String],
       correctAnswer: String,
     },
