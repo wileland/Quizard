@@ -2,8 +2,8 @@ import React from "react";
 import { Outlet, Link } from "react-router-dom";
 import Home from "./pages/Home";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
-import Signup from "./pages/Signup";
+import Dashboard from "./pages/dashboard";
+import Signup from "./pages/signup";
 import { ApolloClient, InMemoryCache, ApolloProvider } from "@apollo/client";
 
 function App() {
@@ -12,9 +12,9 @@ function App() {
       <nav>
         {/* Links for nav */}
         <Link to="/">Home</Link>
-        <Link to="/login">Login</Link>
-        <Link to="/signup">Signup</Link>
-        <Link to="/dashboard">Dashboard</Link>
+        <Link to="/Login">Login</Link>
+        <Link to="/Signup">Signup</Link>
+        <Link to="/Dashboard">Dashboard</Link>
       </nav>
       <main>
         <Outlet />
