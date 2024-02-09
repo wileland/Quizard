@@ -1,8 +1,8 @@
-import React from "react";
-import { useQuery } from "@apollo/client";
-import { QUERY_QUIZZES } from "../utils/queries";
-import QuizList from "../components/QuizList";
-import CreateQuizButton from "../components/CreateQuizButton.jsx";
+import React from 'react';
+import { useQuery } from '@apollo/client';
+import { QUERY_QUIZZES } from '../utils/queries';
+import QuizList from '../components/QuizList';
+import CreateQuizButton from '../components/CreateQuizButton.jsx';
 
 const Dashboard = () => {
   const { loading, error, data } = useQuery(QUERY_QUIZZES);
