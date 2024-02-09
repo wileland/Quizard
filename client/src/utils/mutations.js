@@ -43,5 +43,15 @@ export const REMOVE_QUIZ = gql `
   }
 `;
 
+export const ACTIVATE_QUIZ = gql`
+  mutation activateQuiz($id: ID!) {
+    activateQuiz(id: $id) {
+      _id
+      title
+      isActive
+    }
+  }
+`;
 
+ 
 

@@ -1,18 +1,18 @@
-import  Quiz  from '../models/Quiz.js';
-import Profile  from '../models/Profile.js';
+import Quiz from '../models/Quiz.js';
+import Profile from '../models/Profile.js';
 import { signToken, AuthenticationError } from '../utils/auth.js';
 
 const resolvers = {
   Query: {
-    // find all quizzez 
+    // find all quizzes 
     quizzes: async () => {
       return Quiz.find().sort({ createdAt: -1 });
     },
-    //find one quiz
+    // find one quiz
     quiz: async (parent, { quizId }) => {
       return Quiz.findOne({ _id: quizId });
     },
-    // // find all profiles
+    // find all profiles
     profiles: async () => {
       return Profile.find();
     },
@@ -20,16 +20,16 @@ const resolvers = {
     profile: async (parent, { profileId }) => {
       return Profile.findOne({ _id: profileId });
     },
-    // By adding context to our query, we can retrieve the logged in user without specifically searching for them
+    // Retrieve the logged in user
     me: async (parent, args, context) => {
       if (context.user) {
         return Profile.findOne({ _id: context.user._id });
       }
-      throw AuthenticationError;
+      throw new AuthenticationError('Not logged in');
     },
   },
   Mutation: {
-    //create a new quiz
+    // create a new quiz
     addQuiz: async (parent, { quizQuestion, quizAnswer }) => {
       return Quiz.create({ quizQuestion, quizAnswer });
     },
@@ -37,7 +37,7 @@ const resolvers = {
     removeQuiz: async (parent, { quizId }) => {
       return Quiz.findOneAndDelete({ _id: quizId });
     },
-    //create new profile SIGN UP
+    // create new profile (SIGN UP)
     addProfile: async (parent, { username, email, password }) => {
       const profile = await Profile.create({ username, email, password });
       const token = signToken(profile);
@@ -49,13 +49,13 @@ const resolvers = {
       const profile = await Profile.findOne({ email });
 
       if (!profile) {
-        throw AuthenticationError;
+        throw new AuthenticationError('Incorrect email or password');
       }
 
       const correctPw = await profile.isCorrectPassword(password);
 
       if (!correctPw) {
-        throw AuthenticationError;
+        throw new AuthenticationError('Incorrect email or password');
       }
 
       const token = signToken(profile);
@@ -66,7 +66,11 @@ const resolvers = {
       if (context.user) {
         return Profile.findOneAndDelete({ _id: context.user._id });
       }
-      throw AuthenticationError;
+      throw new AuthenticationError('Not logged in');
+    },
+    // Activate or deactivate a quiz
+    activateQuiz: async (parent, { id, isActive }) => {
+      return await Quiz.findByIdAndUpdate(id, { isActive }, { new: true });
     },
   },
 };
