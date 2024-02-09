@@ -39,11 +39,11 @@ apolloServer
   // Serve React App
   app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-=======
+
     // Start the HTTP server listening on the specified port
     httpServer.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
->>>>>>> dd7933d7e1cb1e551ffb9dbd75343f204d99a2c0
+
     });
   })
   .catch((error) => console.error("Error starting Apollo Server:", error));
