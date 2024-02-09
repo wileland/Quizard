@@ -1,78 +1,72 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
-
-import { ADD_QUESTION } from "../utils/mutations";
+import QuestionForm from '../components/QuestionForm'
+import { ADD_QUIZ } from "../utils/mutations";
 
 import Auth from "../utils/auth";
 
 const QuizForm = ({ quizId }) => {
-  const [question, setQuestion] = useState('');
-  const [answerOptions, setAnswerOptions] = useState(['', '', '', '']);
-  const [correctAnswer, setCorrectAnswer] = useState('');
+  const [title, setTitle] = useState("");
+  const [questionNumber, setQuestionNumber] = useState(0);
+  const [questions, setQuestions] = useState([]);
 
-  const [addQuestion, { error }] = useMutation(ADD_QUESTION);
+
+  const [addQuiz, { error }] = useMutation(ADD_QUIZ);
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const data = await addQuestion({
+      const data = await addQuiz({
         variables: {
           quizId,
-          question,
-          answerOptions,
-          correctAnswer
+          title,
+          questionNumber,
+          questions,
         },
       });
 
-      setQuestion('');
-      setAnswerOptions(['', '', '', '']);
-      setCorrectAnswer( ' ');
+      setTitle('');
+      setQuestionNumber(0);
+      setQuestions([]);
     } catch (err) {
       console.error(err);
     }
   };
 
-  const handleOptionChange = (index, value) => {
-    const newOptions = [...answerOptions];
-    newOptions[index] = value;
-    setAnswerOptions(newOptions);
+  const addQuestionData = (questionData) => {
+    setQuestions([...questions, questionData]);
   };
 
   return (
     <div>
-        <h3>add your questions</h3>
+        <h3>CREATE YOUR QUIZ</h3>
 
         {Auth.loggedIn() ? (
             <form
             className=''
-            onSubmit={handleFormSubmit}
-            >
+            onSubmit={handleFormSubmit}>
                 <div className=''>
                     <input 
-                    placeholder='Question'
-                    value={question}
+                    placeholder='Title'
+                    value={title}
                     className=''
-                    onChange={(event) => setQuestion(event.target.value)} 
-                    /> 
-                </div>  
-
-                {answerOptions.map((option, index) => (
-                  <div key={index} className=''>
-                    <input 
-                      placeholder={`Option ${index + 1}`}
-                      value={option}
-                      className=''
-                      onChange={(event) => handleOptionChange(index, event.target.value)} 
+                    onChange={(event) => setTitle(event.target.value)} 
                     />
-                  </div>
-                ))}
+                </div>
 
-                <div className=''>
-                    <button className='' type='submit'>
-                        Add Question
-                    </button>
+                <div>
+                    <input
+                    type='number'
+                    placeholder='Number of Questions'
+                    value={questionNumber}
+                    onChange={(event) => setQuestionNumber(parseInt(event.target.value))}
+                />
+                </div>
+
+                <div>
+                    <button type='submit'>Create Quiz</button>
                 </div>
                 {error && (
                     <div className=''>
@@ -80,12 +74,15 @@ const QuizForm = ({ quizId }) => {
                     </div>
                 )}
             </form>
-        ) : (
-            <p>
-                You need to be logged in to create a quiz. Please {' '}
-                <Link to='/login'>login</Link> or <Link to='/signup'>signup</Link>
-            </p>
+        ):(
+        <p>
+            You need to be logged in to create a quiz. Please {' '}
+            <Link to='/login'>login</Link> or <Link to='/signup'>signup</Link>
+        </p>
         )}
+
+         {/* Render QuestionForm component */}
+      <QuestionForm quizId={quizId} />
     </div>
   );
 };

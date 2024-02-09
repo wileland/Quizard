@@ -5,6 +5,10 @@ const quizSchema = new Schema({
     type: String,
     required: true,
   },
+  questionNumber: {
+    type: Number,
+    required: true,
+  },
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
