@@ -7,7 +7,6 @@ import { typeDefs, resolvers } from "./schemas/index.js";
 import { authMiddleware } from "./utils/auth.js";
 import db from "./config/connection.js";
 import initializeSocketIo from "./socketServer.js";
-import "reflect-metadata";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();

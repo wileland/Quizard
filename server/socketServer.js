@@ -1,6 +1,7 @@
 import { Server } from "socket.io";
-import { useSocketServer } from "socket-controllers";
-
+//import the Game state?
+//--> pass in the socket and state
+//
 const initializeSocketIo = (httpServer) => {
   const io = new Server(httpServer, {
     cors: {
@@ -11,10 +12,10 @@ const initializeSocketIo = (httpServer) => {
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
     // Add your Socket.IO event handling logic here
+    socket.emit("init", { data: "hello world" });
   });
 
   return io;
 };
 
 export default initializeSocketIo;
-
