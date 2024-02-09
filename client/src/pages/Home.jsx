@@ -1,38 +1,45 @@
-import { Link } from "react-router-dom";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 
 const Home = () => {
   const [gameCode, setGameCode] = useState("");
+  const socket = useRef(null);
+
   useEffect(() => {
-    const socket = io("http://localhost:3001");
+    socket.current = io("http://localhost:3001");
+
     const handleInit = (msg) => {
       console.log(msg);
     };
 
-    socket.on("init", handleInit);
+    socket.current.on("init", handleInit);
+
+    return () => {
+      socket.current.off("init", handleInit);
+      socket.current.disconnect();
+    };
   }, []);
 
   function joinGame() {
-    socket.emit("joinGame", gameCode);
-    init();
+    if (gameCode.trim()) {
+      socket.current.emit("joinGame", gameCode);
+      init();
+    } else {
+      console.log("INVALID GAME CODE !!");
+    }
   }
 
   return (
     <div>
-      <div>
-        <input
-          id="gameInputCode"
-          type="text"
-          placeholder="Enter Lobby Code"
-          value={gameCode}
-          onChange={(e) => setGameCode(e.target.value)}
-        />
-
-        <button id="joinLobbyBtn" type="button" onClick={joinGame}>
-          Join!
-        </button>
-      </div>
+      <input
+        type="text"
+        placeholder="Enter Lobby Code"
+        value={gameCode}
+        onChange={(e) => setGameCode(e.target.value)}
+      />
+      <button type="button" onClick={joinGame}>
+        Join!
+      </button>
     </div>
   );
 };
