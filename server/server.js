@@ -3,29 +3,38 @@
 // import path from 'path';
 // import { fileURLToPath } from 'url';
 // import { typeDefs, resolvers } from './schemas/index.js';
-// import { expressMiddleware } from '@apollo/server/express4';
+
 // import { authMiddleware } from './utils/auth.js';
-// import db from './config/connection.js';
-// // 
+// import connectDB from './config/connection.js';
+
+// /////////////////////////////////////////
+// import socketIO from 'socket.io';
+// const io = socketIO(3000); // 
+
+// io.on('connection', socket => {
+//   console.log(socket.id);
+// });
+// //////////////////////////////////////////////
+
 // // Set __dirname in ES6 module
 // const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // // Connect to MongoDB
-// // connectDB();
+// connectDB();
 
 // const app = express();
 // const PORT = process.env.PORT || 3001;
 
 // // Middlewares
-// // app.use(express.json());
-// // app.use(express.urlencoded({ extended: true }));
+// app.use(express.json());
+// app.use(express.urlencoded({ extended: true }));
 // app.use(express.static(path.join(__dirname, '../client/build')));
 
 // // Apollo Server
 // const server = new ApolloServer({
 //   typeDefs,
 //   resolvers,
-//   // context: ({ req }) => ({ user: authMiddleware(req) }),
+//   context: authMiddleware
 // });
 
 // // Correct order: await server.start() before server.applyMiddleware()
@@ -38,18 +47,6 @@
 //     res.sendFile(path.join(__dirname, '../client/build/index.html'));
 //   });
 
-//   app.use(express.urlencoded({ extended: false }));
-//   app.use(express.json());
-  
-//   app.use('/graphql', expressMiddleware(server));
-
-//   db.once('open', () => {
-//     app.listen(PORT, () => {
-//       console.log(`API server running on port ${PORT}!`);
-//       console.log(`Use GraphQL at http://localhost:${PORT}/graphql`);
-//     });
-//   });
-
 //   // Error handling
 //   app.use((err, req, res, next) => {
 //     console.error(err);
@@ -57,26 +54,26 @@
 //   });
 
 //   // Start the server
-//   // app.listen(PORT, () => {
-//   //   console.log(
-//   //     `Server is running on http://localhost:${PORT}${server.graphqlPath}`
-//   //   );
-//   // });
+//   app.listen(PORT, () => {
+//     console.log(
+//       `Server is running on http://localhost:${PORT}${server.graphqlPath}`
+//     );
+//   });
 // }
 
 // startServer();
 
 
 import express from 'express';
+import { createServer } from 'http';
 import { ApolloServer } from 'apollo-server-express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { typeDefs, resolvers } from './schemas/index.js';
-
 import { authMiddleware } from './utils/auth.js';
-import connectDB from './config/connection.js';
+import db from './config/connection.js';
+import initializeSocketIo from './socketServer.js'; // Adjust the path as necessary
 
-// Set __dirname in ES6 module
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 let lol;
@@ -88,42 +85,35 @@ connectDB();
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../client/build')));
+// Serve the static files from the React app
+app.use(express.static(path.join(__dirname, 'client', 'build')));
 
-// Apollo Server
-const server = new ApolloServer({
+// Apollo Server setup
+const apolloServer = new ApolloServer({
   typeDefs,
   resolvers,
-  // context: ({ req }) => ({ user: authMiddleware(req) }),
+  context: ({ req }) => ({ user: authMiddleware(req) }),
 });
 
-// Correct order: await server.start() before server.applyMiddleware()
-async function startServer() {
-  await server.start();
-  server.applyMiddleware({ app });
+// Start Apollo Server and initialize Socket.IO after starting
+apolloServer.start().then(() => {
+  const httpServer = createServer(app);
+  initializeSocketIo(httpServer);
 
   // Serve React App
   app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+=======
+  // Start the HTTP server listening on the specified port
+  httpServer.listen(PORT, () => {
+    console.log(`API server running on port ${PORT}!`);
+>>>>>>> dd7933d7e1cb1e551ffb9dbd75343f204d99a2c0
   });
+}).catch(error => console.error('Error starting Apollo Server:', error));
 
-  // Error handling
-  app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).send('Internal Server Error');
-  });
-
-  // Start the server
-  app.listen(PORT, () => {
-    console.log(
-      `Server is running on http://localhost:${PORT}${server.graphqlPath}`
-    );
-  });
-}
-
-startServer();
-
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err);
+  res.status(500).send('Internal Server Error');
+});
 
