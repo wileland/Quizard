@@ -4,70 +4,43 @@ import { ApolloServer } from "apollo-server-express";
 import path from "path";
 import { fileURLToPath } from "url";
 import { typeDefs, resolvers } from "./schemas/index.js";
-import { authMiddleware } from "./utils/auth.js";
 import db from "./config/connection.js";
 import initializeSocketIo from "./socketServer.js";
+import cors from "cors";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const app = express();
-const PORT = process.env.PORT || 3001;
+(async () => {
+  try {
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const app = express();
+    const PORT = process.env.PORT || 3001;
 
-<<<<<<< HEAD
-// Middlewares
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, '../client/dist')));
-=======
-// Serve the static files from the React app
-app.use(express.static(path.join(__dirname, "client", "build")));
+    app.use(cors());
+    app.use(express.static(path.join(__dirname, "client", "build")));
 
-// Apollo Server setup
-const apolloServer = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ req }) => ({ user: authMiddleware(req) }),
-});
+    await db();
+    console.log("Connected to MongoDB");
 
-// Start Apollo Server and initialize Socket.IO after starting
-apolloServer
-  .start()
-  .then(() => {
+    const apolloServer = new ApolloServer({
+      typeDefs,
+      resolvers,
+      //TODO: debug why context gives 500 internal server error
+      //keep it commented out until resolved.
+      //context: ({ req }) => ({ user: authMiddleware(req) }),
+    });
+
+    await apolloServer.start();
+    apolloServer.applyMiddleware({ app });
+
     const httpServer = createServer(app);
     initializeSocketIo(httpServer);
 
-<<<<<<< HEAD
-  // Serve React App
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-=======
-    // Start the HTTP server listening on the specified port
     httpServer.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
->>>>>>> dd7933d7e1cb1e551ffb9dbd75343f204d99a2c0
+      console.log(
+        `GraphQL here: http://localhost:${PORT}${apolloServer.graphqlPath}`,
+      );
     });
-  })
-  .catch((error) => console.error("Error starting Apollo Server:", error));
-
-<<<<<<< HEAD
-  // Error handling
-  app.use((err, req, res, next) => {
-    console.error(err);
-    res.status(500).send(err.message);
-  });
-
-  // Start the server
-  app.listen(PORT, () => {
-    console.log(
-      `Server is running on http://localhost:${PORT}${server.graphqlPath}`
-    );
-  });
-}
-
-startServer();
-
-=======
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send("Internal Server Error");
-});
+  } catch (error) {
+    console.error("Server startup error:", error);
+  }
+})();

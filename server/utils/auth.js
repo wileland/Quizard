@@ -1,30 +1,15 @@
-// import jwt from 'jsonwebtoken';
+import { GraphQLError } from "graphql";
+import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
 
-// const authMiddleware = (req, res, next) => {
-//   try {
-//     const token = req.header('Authorization').replace('Bearer ', '');
-//     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//     // Add user finding logic here using decoded data (usually user ID)
-//     // For example: req.user = await User.findById(decoded.id);
-//     next();
-//   } catch (error) {
-//     res.status(401).send({ error: 'Please authenticate.' });
-//   }
-// };
+dotenv.config();
 
-// export { authMiddleware };
+const secret = process.env.JWT_SECRET; // Replace with your actual secret key
+const expiration = "1d";
 
-
-
-import { GraphQLError } from 'graphql';
-import jwt from 'jsonwebtoken';
-
-const secret = 'yourSecretKey';  // Replace with your actual secret key
-const expiration = '1d';
-
-const AuthenticationError = new GraphQLError('Could not authenticate user.', {
+const AuthenticationError = new GraphQLError("Could not authenticate user.", {
   extensions: {
-    code: 'UNAUTHENTICATED',
+    code: "UNAUTHENTICATED",
   },
 });
 
@@ -34,24 +19,24 @@ const authMiddleware = function ({ req }) {
 
   // We split the token string into an array and return the actual token
   if (req.headers.authorization) {
-    token = token.split(' ').pop().trim();
+    token = token.split(" ").pop().trim();
   }
 
   if (!token) {
-    return req;
+    throw AuthenticationError;
   }
 
   // if the token can be verified, add the decoded user's data to the request
   // so it can be accessed in the resolver
   try {
-    const { data } = jwt.verify(token, secret, { maxAge: expiration });
+    const { data } = jwt.verify(token, secret);
     req.user = data;
-  } catch {
-    console.log('Invalid token');
+  } catch (err) {
+    console.error("Auth error: ", err.message);
   }
 
   // return the request object so it can be passed to the resolver as `context`
-  return req;
+  return { user: req.user };
 };
 
 const signToken = function ({ email, username, _id }) {
@@ -60,3 +45,4 @@ const signToken = function ({ email, username, _id }) {
 };
 
 export { AuthenticationError, authMiddleware, signToken };
+

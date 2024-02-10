@@ -25,12 +25,6 @@ const Header = () => {
               Signup
             </Link>
           </li>
-
-          <li>
-            <Link spy="true" smooth="true" to="/dashboard">
-              Dashboard
-            </Link>
-          </li>
         </ul>
       </div>
     </>
