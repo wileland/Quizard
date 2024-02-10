@@ -33,8 +33,10 @@ const typeDefs = `
     login(email: String!, password: String!): Auth
   
     removeProfile: Profile
-    addQuiz(quizQuestion: String!, quizAnswer: String!): Quiz
+    addQuestion(question: String!, answerOptions: [String]!, correctAnswer: String!): Quiz
     removeQuiz: Quiz 
+    addQuiz(profileId: ID!, questions: [String]!): Quiz
+    removeQuestion(question: String!): Quiz
   
   }
 `;

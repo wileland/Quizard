@@ -23,9 +23,7 @@ import cors from "cors";
     const apolloServer = new ApolloServer({
       typeDefs,
       resolvers,
-      //TODO: debug why context gives 500 internal server error
-      //keep it commented out until resolved.
-      //context: ({ req }) => ({ user: authMiddleware(req) }),
+      context: authMiddleware,
     });
 
     await apolloServer.start();

@@ -30,8 +30,8 @@ const resolvers = {
   },
   Mutation: {
     //create a new quiz
-    addQuiz: async (parent, { quizQuestion, quizAnswer }) => {
-      return Quiz.create({ quizQuestion, quizAnswer });
+    addQuiz: async (parent, { title, questions }) => {
+      return Quiz.create({ title, questions });
     },
     // delete quiz
     removeQuiz: async (parent, { quizId }) => {
@@ -65,6 +65,40 @@ const resolvers = {
     removeProfile: async (parent, args, context) => {
       if (context.user) {
         return Profile.findOneAndDelete({ _id: context.user._id });
+      }
+      throw AuthenticationError;
+    },
+    addQuestion: async (parent, { quizId, question, answerOptions, correctAnswer }, context) => {
+      if (context.user) {
+        const updatedQuiz = await Quiz.findOneAndUpdate(
+          {_id: quizId },
+          {
+            $addToSet: { 
+              questions: { 
+                questionText: question, 
+                answerOptions: answerOptions, 
+                correctAnswer: correctAnswer 
+              } 
+            },
+          },
+          {
+            new: true,
+            runValidators: true,
+          }
+        );
+    
+        return updatedQuiz;
+      }
+    
+      throw new AuthenticationError('User not authenticated.');
+    },
+    removeQuestion: async (parent, { question }, context) => {
+      if (context.user) {
+        return Quiz.findOneAndUpdate(
+          { _id: context.user._id },
+          { $pull: { questions: question } },
+          { new: true }
+        );
       }
       throw AuthenticationError;
     },
