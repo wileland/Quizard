@@ -23,7 +23,6 @@ const Home = () => {
   function joinGame() {
     if (gameCode.trim()) {
       socket.current.emit("joinGame", gameCode);
-      init();
     } else {
       console.log("INVALID GAME CODE !!");
     }
