@@ -8,6 +8,7 @@ const quizSchema = new Schema({
   createdBy: {
     type: Schema.Types.ObjectId,
     ref: 'User',
+    required: true,
   },
   questions: [
     {
@@ -16,7 +17,13 @@ const quizSchema = new Schema({
       correctAnswer: String,
     },
   ],
+  active: { // New field to indicate whether the quiz is currently active
+    type: Boolean,
+    default: false, // By default, a quiz is inactive when created
+  },
   // Additional fields as required
+}, {
+  timestamps: true, // Optionally, add timestamps for creation and updates
 });
 
 const Quiz = model('Quiz', quizSchema);
