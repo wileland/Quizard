@@ -35,24 +35,13 @@ export const ADD_QUESTION = gql `
   }
 `;
 
-export const REMOVE_QUIZ = gql `
+export const REMOVE_QUIZ = gql`
   mutation removeQuiz {
     removeQuiz {
       _id
     }
   }
 `;
-
-
-// export const ADD_QUESTION = gql `
-//   mutation addQuestion($profileId: ID!, $questions: [String]!) {
-//     addQuestion(profileId: $profileId, questions: $questions) {
-//       title
-//       questions
-//       _id
-//     }
-//   }
-// `;
 
 export const ADD_QUIZ = gql `
   mutation addQuiz($profileId: ID!, $title: String, $questions: [String]!) {
@@ -61,4 +50,4 @@ export const ADD_QUIZ = gql `
       questions
       _id
     }
-}`
+}`;

@@ -1,9 +1,16 @@
 import mongoose from 'mongoose';
 
 const connectDB = async () => {
-  mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/QuizardDB');
+  try {
+    await mongoose.connect(
+      process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/QuizardDB",
+    );
+    console.log("Connected to mongoDB");
+  } catch (err) {
+    console.error("MongoDB connnection error: ", err.message);
+  }
 };
 
-
-export default connectDB;
+const db = connectDB;
+export default db;
 
