@@ -25,8 +25,9 @@ export const LOGIN_USER = gql`
   }
 `;
 
+
 export const ADD_QUESTION = gql `
-  mutation addQuestion($question: String!, $answerOptions: [String]!, $correctAnswer) {
+  mutation addQuestion($question: String!, $answerOptions: [String]!, $correctAnswer: String!) {
     addQuestion(question: $question, answerOptions: $answerOptions, correctAnswer: $correctAnswer) {
       title
       questions
