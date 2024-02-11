@@ -1,3 +1,4 @@
+
 const typeDefs = `
   type Profile {
     _id: ID
@@ -5,19 +6,18 @@ const typeDefs = `
     email: String
   }
 
-  
   type Quiz {
-    _id: ID
-    title: String
-    questions: [String]
+    _id: ID!
+    title: String!
+    questions: [Question!]!
+    isActive: Boolean! # Indicates if the quiz is active or not
+    // ... any other fields ...
   }
-  
+
   type Auth {
     token: ID!
     profile: Profile
   }
-
-
 
   type Query {
     profiles: [Profile]!
@@ -31,13 +31,12 @@ const typeDefs = `
   type Mutation {
     addProfile(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
-  
     removeProfile: Profile
-    addQuestion(question: String!, answerOptions: [String]!, correctAnswer: String!): Quiz
-    removeQuiz: Quiz 
-    addQuiz(profileId: ID!, questions: [String]!): Quiz
-    removeQuestion(question: String!): Quiz
-  
+    addQuiz(quizQuestion: String!, quizAnswer: String!): Quiz
+    removeQuiz: Quiz
+    # Activate or deactivate a quiz
+    activateQuiz(id: ID!, isActive: Boolean!): Quiz
+
   }
 `;
 

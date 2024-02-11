@@ -103,6 +103,15 @@ const resolvers = {
       throw AuthenticationError;
     },
   },
+  activateQuiz: async (parent, { id }, context) => {
+    // Logic to set the quiz's isActive status to true
+    const updatedQuiz = await Quiz.findByIdAndUpdate(
+      id,
+      { isActive: true },
+      { new: true }
+    );
+    return updatedQuiz;
+  },
 };
 
 export default resolvers;
