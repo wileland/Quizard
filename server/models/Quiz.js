@@ -10,6 +10,10 @@ const quizSchema = new Schema({
     ref: 'User',
     required: true,
   },
+  questionNumber: {
+    type: Number,
+
+  },
   questions: [
     {
       questionText: String,
@@ -17,7 +21,7 @@ const quizSchema = new Schema({
       correctAnswer: String,
     },
   ],
-  active: { // New field to indicate whether the quiz is currently active
+  isActive: { // New field to indicate whether the quiz is currently active
     type: Boolean,
     default: false, // By default, a quiz is inactive when created
   },

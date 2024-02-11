@@ -7,6 +7,7 @@ import { typeDefs, resolvers } from "./schemas/index.js";
 import db from "./config/connection.js";
 import initializeSocketIo from "./socketServer.js";
 import cors from "cors";
+import { authMiddleware } from './utils/auth.js';
 
 (async () => {
   try {
