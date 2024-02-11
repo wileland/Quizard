@@ -1,3 +1,5 @@
+// TODO: Setup TypeDefs for Game schema
+
 const typeDefs = `
   type Profile {
     _id: ID
