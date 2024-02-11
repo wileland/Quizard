@@ -7,9 +7,11 @@ const typeDefs = `
   }
 
   type Quiz {
-    _id: ID
-    title: String
-    questions: [String]
+    _id: ID!
+    title: String!
+    questions: [Question!]!
+    isActive: Boolean! # Indicates if the quiz is active or not
+    // ... any other fields ...
   }
 
   type Auth {
@@ -34,6 +36,7 @@ const typeDefs = `
     removeQuiz: Quiz
     # Activate or deactivate a quiz
     activateQuiz(id: ID!, isActive: Boolean!): Quiz
+
   }
 `;
 
