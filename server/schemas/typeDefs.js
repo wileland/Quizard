@@ -1,6 +1,13 @@
 // TODO: Setup TypeDefs for Game schema
 
 const typeDefs = `
+  type Game {
+    id: ID!
+    hostId: String!
+    pin: String!
+    gameLive: Boolean!
+    gameData: String
+  }
   type Profile {
     _id: ID
     hostId: String
@@ -38,6 +45,7 @@ const typeDefs = `
     quiz(quizId: ID!): Quiz
     getProfile(playerId: String!): Profile
     getProfiles(hostId: String!): [Profile]
+    getGame(hostId: String!): Game
     # Because we have the context functionality in place to check a JWT and decode its data, we can use a query that will always find and return the logged in user's data
     me: Profile
   }
@@ -54,6 +62,8 @@ const typeDefs = `
     removeQuestion(questionId: ID!): Quiz
     addPlayer(hostId: String!, playerId: String!, username: String!, gameData: String!): Profile
     removePlayer(playerId: String): Profile
+    addGame(pin: String!, hostId: String!, gameLive: Boolean!, gameData: String!): Game
+    removeGame(hostId: String!): Game
   }
 `;
 

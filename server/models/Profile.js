@@ -1,4 +1,4 @@
-import { Schema, model } from "mongoose";
+import { Schema, SchemaTypes, model } from "mongoose";
 import bcrypt from "bcrypt";
 
 const profileSchema = new Schema({
@@ -25,7 +25,7 @@ const profileSchema = new Schema({
     required: true,
   },
   hostId: String,
-  //gameData:
+  gameData: SchemaTypes.Mixed,
 });
 
 // set up pre-save middleware to create password
