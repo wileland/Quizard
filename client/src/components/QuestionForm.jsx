@@ -3,13 +3,12 @@ import { Link } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 
 import { ADD_QUESTION } from "../utils/mutations";
-
 import Auth from "../utils/auth";
 
-const QuestionForm = ({ quizId }) => { // this may need to be questions object if we get an error 
-  const [question, setQuestion] = useState('');
-  const [answerOptions, setAnswerOptions] = useState(['', '', '', '']);
-  const [correctAnswer, setCorrectAnswer] = useState('');
+const QuestionForm = ({ quizId, addQuestionData }) => {
+  const [questionText, setQuestionText] = useState("");
+  const [answerOptions, setAnswerOptions] = useState(["", "", "", ""]);
+  const [correctAnswer, setCorrectAnswer] = useState("");
 
   const [addQuestion, { error }] = useMutation(ADD_QUESTION);
 
@@ -17,18 +16,26 @@ const QuestionForm = ({ quizId }) => { // this may need to be questions object i
     event.preventDefault();
 
     try {
-      const data = await addQuestion({
+      await addQuestion({
         variables: {
           quizId,
-          question,
+          question: questionText,
           answerOptions,
-          correctAnswer
+          correctAnswer,
         },
       });
 
-      setQuestion('');
-      setAnswerOptions(['', '', '', '']);
-      setCorrectAnswer( ' ');
+      setQuestionText("");
+      setAnswerOptions(["", "", "", ""]);
+      setCorrectAnswer("");
+
+      if (addQuestionData) {
+        addQuestionData({
+          question: questionText,
+          answerOptions,
+          correctAnswer,
+        });
+      }
     } catch (err) {
       console.error(err);
     }
@@ -42,50 +49,50 @@ const QuestionForm = ({ quizId }) => { // this may need to be questions object i
 
   return (
     <div>
-        <h3>add your questions</h3>
+      <h3>Add Your Questions</h3>
 
-        {Auth.loggedIn() ? (
-            <form
-            className=''
-            onSubmit={handleFormSubmit}
-            >
-                <div className=''>
-                    <input 
-                    placeholder='Question'
-                    value={question}
-                    className=''
-                    onChange={(event) => setQuestion(event.target.value)} 
-                    /> 
-                </div>  
+      {Auth.loggedIn() ? (
+        <form onSubmit={handleFormSubmit}>
+          <div>
+            <input
+              placeholder="Question"
+              value={questionText}
+              onChange={(event) => setQuestionText(event.target.value)}
+            />
+          </div>
 
-                {answerOptions.map((option, index) => (
-                  <div key={index} className=''>
-                    <input 
-                      placeholder={`Option ${index + 1}`}
-                      value={answerOptions}
-                      className=''
-                      onChange={(event) => handleOptionChange(index, event.target.value)} 
-                    />
-                  </div>
-                ))}
+          {answerOptions.map((option, index) => (
+            <div key={index}>
+              <input
+                placeholder={`Option ${index + 1}`}
+                value={option}
+                onChange={(event) =>
+                  handleOptionChange(index, event.target.value)
+                }
+              />
+            </div>
+          ))}
 
-                <div className=''>
-                    <button className='' type='submit'>
-                        Add Question
-                    </button>
-                </div>
-                {error && (
-                    <div className=''>
-                        {error.message}
-                    </div>
-                )}
-            </form>
-        ) : (
-            <p>
-                You need to be logged in to create a quiz. Please {' '}
-                <Link to='/login'>login</Link> or <Link to='/signup'>signup</Link>
-            </p>
-        )}
+          <div>
+            <input
+              type="text"
+              placeholder="Correct Answer"
+              value={correctAnswer}
+              onChange={(event) => setCorrectAnswer(event.target.value)}
+            />
+          </div>
+
+          <div>
+            <button type="submit">Add Question</button>
+          </div>
+          {error && <div>{error.message}</div>}
+        </form>
+      ) : (
+        <p>
+          You need to be logged in to add questions. Please{" "}
+          <Link to="/login">login</Link> or <Link to="/signup">signup</Link>.
+        </p>
+      )}
     </div>
   );
 };

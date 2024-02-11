@@ -1,5 +1,3 @@
-// TODO: Setup TypeDefs for Game schema
-
 const typeDefs = `
   type Game {
     id: ID!
@@ -8,10 +6,11 @@ const typeDefs = `
     gameLive: Boolean!
     gameData: String
   }
+
   type Profile {
     _id: ID
     hostId: String
-    playerId: string
+    playerId: String 
     username: String
     email: String
     gameData: String
@@ -20,10 +19,8 @@ const typeDefs = `
   type Quiz {
     _id: ID!
     title: String!
-    questionNumber: Int
     questions: [Question!]!
-    isActive: Boolean! # Indicates if the quiz is active or not
-
+    isActive: Boolean!
   }
 
   type Question {
@@ -41,12 +38,11 @@ const typeDefs = `
   type Query {
     profiles: [Profile]!
     profile(profileId: ID!): Profile
-    quizzes: [Quiz]
+    quizzes: [Quiz]!
     quiz(quizId: ID!): Quiz
-    getProfile(playerId: String!): Profile
-    getProfiles(hostId: String!): [Profile]
+    getPlayer(playerId: ID!): Profile
+    getPlayers(hostId: String!): [Profile]!
     getGame(hostId: String!): Game
-    # Because we have the context functionality in place to check a JWT and decode its data, we can use a query that will always find and return the logged in user's data
     me: Profile
   }
 
@@ -54,14 +50,13 @@ const typeDefs = `
     addProfile(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     removeProfile: Profile
-    addQuiz(quizQuestion: String!, quizAnswer: String!): Quiz
-    removeQuiz: Quiz
-    # Activate or deactivate a quiz
+    addQuiz(title: String!, questions: [String]!): Quiz
+    removeQuiz(quizId: ID!): Quiz
     activateQuiz(id: ID!, isActive: Boolean!): Quiz
     addQuestion(quizId: ID!, question: String!, answerOptions: [String!]!, correctAnswer: String!): Quiz
-    removeQuestion(questionId: ID!): Quiz
+    removeQuestion(questionId: ID!): Quiz 
     addPlayer(hostId: String!, playerId: String!, username: String!, gameData: String!): Profile
-    removePlayer(playerId: String): Profile
+    removePlayer(playerId: String!): Profile
     addGame(pin: String!, hostId: String!, gameLive: Boolean!, gameData: String!): Game
     removeGame(hostId: String!): Game
   }

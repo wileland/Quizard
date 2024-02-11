@@ -15,6 +15,12 @@ const Header = () => {
       <div>
         <ul>
           <li>
+            <Link spy="true" smooth="true" to="/">
+              Home
+            </Link>
+          </li>
+
+          <li>
             <Link spy="true" smooth="true" to="/login">
               Login
             </Link>
