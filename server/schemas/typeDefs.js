@@ -1,9 +1,11 @@
-
 const typeDefs = `
   type Profile {
     _id: ID
+    hostId: String
+    playerId: string
     username: String
     email: String
+    gameData: String
   }
 
   type Quiz {
@@ -32,6 +34,8 @@ const typeDefs = `
     profile(profileId: ID!): Profile
     quizzes: [Quiz]
     quiz(quizId: ID!): Quiz
+    getProfile(playerId: String!): Profile
+    getProfiles(hostId: String!): [Profile]
     # Because we have the context functionality in place to check a JWT and decode its data, we can use a query that will always find and return the logged in user's data
     me: Profile
   }
@@ -46,15 +50,9 @@ const typeDefs = `
     activateQuiz(id: ID!, isActive: Boolean!): Quiz
     addQuestion(quizId: ID!, question: String!, answerOptions: [String!]!, correctAnswer: String!): Quiz
     removeQuestion(questionId: ID!): Quiz
+    addPlayer(hostId: String!, playerId: String!, username: String!, gameData: String!): Profile
+    removePlayer(playerId: String): Profile
   }
 `;
 
 export default typeDefs;
-
-
-
-
-
-
-
-
