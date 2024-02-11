@@ -30,7 +30,7 @@ const Login = (props) => {
       });
 
       Auth.login(data.login.token);
-      // navigate("/dashboard");
+      navigate("/dashboard");
     } catch (e) {
       console.error("Login error", e);
     }

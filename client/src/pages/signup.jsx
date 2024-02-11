@@ -35,7 +35,7 @@ const Signup = () => {
       });
 
       Auth.login(data.addProfile.token);
-      // navigate("/dashboard");
+      navigate("/dashboard");
     } catch (e) {
       console.error(e);
     }

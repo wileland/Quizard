@@ -48,6 +48,7 @@ const QuizForm = ({ quizId }) => {
             className=''
             onSubmit={handleFormSubmit}>
                 <div className=''>
+                  <h4>What is the title of your quiz?</h4>
                     <input 
                     placeholder='Title'
                     value={title}
@@ -57,6 +58,7 @@ const QuizForm = ({ quizId }) => {
                 </div>
 
                 <div>
+                    <h4>How many questions will your quiz have?</h4>
                     <input
                     type='number'
                     placeholder='Number of Questions'

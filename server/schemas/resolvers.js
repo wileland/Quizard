@@ -102,16 +102,19 @@ const resolvers = {
       }
       throw AuthenticationError;
     },
+    activateQuiz: async (parent, { isActive }, context) => {
+      if (context.user) {
+        const updatedQuiz = await Quiz.findByIdAndUpdate(
+          context.user._id, // Passing the quiz ID
+          { isActive: isActive },
+          { new: true }
+        );
+        return updatedQuiz;
+      }
+      throw new AuthenticationError('You must be logged in to activate a quiz');
+    },
   },
-  activateQuiz: async (parent, { id }, context) => {
-    // Logic to set the quiz's isActive status to true
-    const updatedQuiz = await Quiz.findByIdAndUpdate(
-      id,
-      { isActive: true },
-      { new: true }
-    );
-    return updatedQuiz;
-  },
+
 };
 
 export default resolvers;
