@@ -52,3 +52,13 @@ export const ADD_QUIZ = gql `
       _id
     }
 }`;
+
+export const ACTIVATE_QUIZ = gql`
+  mutation activateQuiz($id: ID!) {
+    activateQuiz(id: $id) {
+      _id
+      title
+      isActive
+    }
+  }
+`;
