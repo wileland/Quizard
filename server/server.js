@@ -1,4 +1,4 @@
-import express from 'express';
+import express from "express";
 import { createServer } from "http";
 import { ApolloServer } from "apollo-server-express";
 import path from "path";
@@ -7,7 +7,7 @@ import { typeDefs, resolvers } from "./schemas/index.js";
 import db from "./config/connection.js";
 import initializeSocketIo from "./socketServer.js";
 import cors from "cors";
-import { authMiddleware } from './utils/auth.js';
+import { authMiddleware } from "./utils/auth.js";
 
 (async () => {
   try {
@@ -24,7 +24,7 @@ import { authMiddleware } from './utils/auth.js';
     const apolloServer = new ApolloServer({
       typeDefs,
       resolvers,
-      context: authMiddleware,
+      context: { authMiddleware },
     });
 
     await apolloServer.start();

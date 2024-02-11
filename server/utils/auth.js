@@ -31,6 +31,7 @@ const authMiddleware = function ({ req }) {
   try {
     const { data } = jwt.verify(token, secret);
     req.user = data;
+   // return { user: req.user };
   } catch (err) {
     console.error("Auth error: ", err.message);
   }
