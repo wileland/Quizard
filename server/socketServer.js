@@ -1,6 +1,8 @@
 import { Server } from "socket.io";
 import Game from "./models/Game.js";
 import Quiz from "./models/Quiz.js";
+import jwt from "jsonwebtoken";
+import authService from "../client/src/utils/auth.js";
 
 const generateUniquePin = () => {
   return Math.floor(1000 + Math.random() * 9000).toString();
@@ -16,11 +18,29 @@ const initializeSocketIo = (httpServer) => {
   io.on("connection", (socket) => {
     console.log("A user connected:", socket.id);
 
-    socket.on("newQuiz", async (quizData) => {
+    socket.on("newQuiz", async (data) => {
+      //check data structure.
+      console.log(data);
+      const { token, quizData } = data;
+      // const token = authService.getToken();
+      if (typeof token !== "string") {
+        console.error("Token must be a string");
+        socket.emit("quizSaved", {
+          success: false,
+          message: "Authentication failed: Token must be a string.",
+        });
+        return; // Stop processing if token is not a string
+      }
       try {
+        const user = jwt.verify(token, process.env.JWT_SECRET);
+        console.log(user);
+        console.log("--------ifnested");
+        const createdBy = user.data._id;
+        console.log(createdBy);
         const newQuiz = await Quiz.create({
           title: quizData.title,
           questions: quizData.questions,
+          createdBy: createdBy,
         });
         console.log("New quiz saved:", newQuiz);
         socket.emit("quizSaved", { success: true, quizId: newQuiz._id });
@@ -32,6 +52,11 @@ const initializeSocketIo = (httpServer) => {
         });
       }
     });
+
+    //display rendered quizzes
+    // socket.on("renderQuizzes", async () => {
+    //
+    // });
 
     socket.on("startGame", async ({ quizId, hostId }) => {
       const pin = generateUniquePin();
