@@ -1,8 +1,7 @@
-import React from 'react';
-import { useQuery } from '@apollo/client';
-import { QUERY_QUIZZES } from '../utils/queries';
-import QuizItem from './QuizItem'; // Make sure this is the correct path to your QuizItem component
-
+import React from "react";
+import { useQuery } from "@apollo/client";
+import { QUERY_QUIZZES } from "../utils/queries";
+import QuizItem from "./QuizItem";
 const QuizList = () => {
   const { loading, data, error } = useQuery(QUERY_QUIZZES);
 
@@ -11,11 +10,12 @@ const QuizList = () => {
 
   return (
     <div>
-      {data && data.quizzes && data.quizzes.map((quiz) => (
-        <QuizItem key={quiz._id} quiz={quiz} /> // Now using QuizItem component to render each quiz
-      ))}
+      {data &&
+        data.quizzes &&
+        data.quizzes.map((quiz) => <QuizItem key={quiz._id} quiz={quiz} />)}
     </div>
   );
 };
 
 export default QuizList;
+

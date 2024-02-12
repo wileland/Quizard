@@ -8,6 +8,9 @@ import db from "./config/connection.js";
 import initializeSocketIo from "./socketServer.js";
 import cors from "cors";
 import { authMiddleware } from "./utils/auth.js";
+import Profile from "./models/Profile.js";
+import Game from "./models/Game.js";
+import Quiz from "./models/Quiz.js";
 
 (async () => {
   try {
@@ -32,7 +35,9 @@ import { authMiddleware } from "./utils/auth.js";
 
     const httpServer = createServer(app);
     initializeSocketIo(httpServer);
-
+    const profile = new Profile();
+    const game = new Game();
+    const quiz = new Quiz();
     httpServer.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
       console.log(

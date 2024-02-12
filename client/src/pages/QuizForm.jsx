@@ -1,90 +1,68 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useMutation } from "@apollo/client";
-import QuestionForm from '../components/QuestionForm'
-import { ADD_QUIZ } from "../utils/mutations";
+import React, { useState, useEffect } from "react";
+import QuestionForm from "../components/QuestionForm.jsx";
+import io from "socket.io-client";
 
-import Auth from "../utils/auth";
+const socket = io("http://localhost:3000");
 
-const QuizForm = ({ quizId }) => {
+const QuizForm = () => {
   const [title, setTitle] = useState("");
-  const [questionNumber, setQuestionNumber] = useState(0);
   const [questions, setQuestions] = useState([]);
 
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to server");
+    });
 
-  const [addQuiz, { error }] = useMutation(ADD_QUIZ);
+    return () => {
+      socket.off("connect");
+    };
+  }, []);
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const data = await addQuiz({
-        variables: {
-          quizId,
-          title,
-          questionNumber,
-          questions,
-        },
-      });
-
-      setTitle('');
-      setQuestionNumber(0);
-      setQuestions([]);
-    } catch (err) {
-      console.error(err);
-    }
+  const addQuestion = () => {
+    const newQuestion = {
+      question: "",
+      answers: ["", "", "", ""],
+      correct: "",
+    };
+    setQuestions([...questions, newQuestion]);
   };
 
-  const addQuestionData = (questionData) => {
-    setQuestions([...questions, questionData]);
+  const updateQuestion = (index, updatedQuestion) => {
+    const updatedQuestions = questions.map((q, i) =>
+      i === index ? updatedQuestion : q,
+    );
+    setQuestions(updatedQuestions);
+  };
+
+  const submitQuiz = () => {
+    const quizData = {
+      title,
+      questions,
+    };
+    socket.emit("newQuiz", quizData);
+    setTitle("");
+    setQuestions([]);
   };
 
   return (
     <div>
-        <h3>CREATE YOUR QUIZ</h3>
-
-        {Auth.loggedIn() ? (
-            <form
-            className=''
-            onSubmit={handleFormSubmit}>
-                <div className=''>
-                  <h4>What is the title of your quiz?</h4>
-                    <input 
-                    placeholder='Title'
-                    value={title}
-                    className=''
-                    onChange={(event) => setTitle(event.target.value)} 
-                    />
-                </div>
-
-                <div>
-                    <h4>How many questions will your quiz have?</h4>
-                    <input
-                    type='number'
-                    placeholder='Number of Questions'
-                    value={questionNumber}
-                    onChange={(event) => setQuestionNumber(parseInt(event.target.value))}
-                />
-                </div>
-
-                <div>
-                    <button type='submit'>Create Quiz</button>
-                </div>
-                {error && (
-                    <div className=''>
-                        {error.message}
-                    </div>
-                )}
-            </form>
-        ):(
-        <p>
-            You need to be logged in to create a quiz. Please {' '}
-            <Link to='/login'>login</Link> or <Link to='/signup'>signup</Link>
-        </p>
-        )}
-
-         {/* TODO need to render question, answerOptions, and correct answer fields from QuestionForm.jsx */}
-      <QuestionForm quizId={quizId} />
+      <h3>Create Your Quiz</h3>
+      <input
+        type="text"
+        placeholder="Quiz Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      {questions.map((question, index) => (
+        <QuestionForm
+          key={index}
+          questionIndex={index}
+          question={question}
+          updateQuestion={updateQuestion}
+        />
+      ))}
+      <button onClick={addQuestion}>Add Question</button>
+      <button onClick={submitQuiz}>Submit Quiz</button>
     </div>
   );
 };

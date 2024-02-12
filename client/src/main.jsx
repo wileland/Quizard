@@ -14,6 +14,8 @@ import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Dashboard from "./pages/dashboard.jsx";
 import Signup from "./pages/signup.jsx";
+import QuizForm from "./pages/QuizForm.jsx";
+import QuestionForm from "./components/QuestionForm.jsx";
 
 const httpLink = createHttpLink({
   uri: "http://localhost:3001/graphql",
@@ -55,6 +57,14 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: <Dashboard />,
+      },
+      {
+        path: "/quizform",
+        element: <QuizForm />,
+      },
+      {
+        path: "/questionform",
+        element: <QuestionForm />,
       },
     ],
   },
