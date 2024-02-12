@@ -5,6 +5,8 @@ import QuizList from "../components/QuizList";
 import CreateQuizButton from "../components/CreateQuizButton.jsx";
 
 const Dashboard = () => {
+  const { loading, data } = useQuery(QUERY_QUIZZES);
+
   return (
     <main>
       <h1>Welcome to the Quizard's Dashboard</h1>
@@ -13,7 +15,11 @@ const Dashboard = () => {
         the minds of your participants!
       </p>
       <CreateQuizButton />
-      {/*data && data.quizzes && <QuizList quizzes={data.quizzes} />*/}
+      {loading ? (
+        <p>Loading quizzes...</p>
+      ) : (
+        <QuizList quizzes={data.quizzes} />
+      )}
     </main>
   );
 };

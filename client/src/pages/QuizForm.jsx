@@ -1,98 +1,70 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useMutation } from "@apollo/client";
-import QuestionForm from "../components/QuestionForm";
-import { ADD_QUIZ } from "../utils/mutations";
-import Auth from "../utils/auth";
+import React, { useState, useEffect } from "react";
+import QuestionForm from "../components/QuestionForm.jsx";
+import io from "socket.io-client";
 
-const QuizForm = ({ quizId }) => {
+const socket = io("http://localhost:3000");
+
+const QuizForm = () => {
   const [title, setTitle] = useState("");
-  const [questions, setQuestions] = useState([
-    { question: "", answers: ["", "", "", ""], correct: "" },
-  ]);
+  const [questions, setQuestions] = useState([]);
 
-  const [addQuiz, { error }] = useMutation(ADD_QUIZ);
+  useEffect(() => {
+    socket.on("connect", () => {
+      console.log("Connected to server");
+    });
 
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const { data } = await addQuiz({
-        variables: {
-          quizId,
-          title,
-          questions,
-        },
-      });
-
-      // Reset form state after submission
-      setTitle("");
-      setQuestions([{ question: "", answers: ["", "", "", ""], correct: "" }]);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+    return () => {
+      socket.off("connect");
+    };
+  }, []);
 
   const addQuestion = () => {
-    setQuestions([
-      ...questions,
-      { question: "", answers: ["", "", "", ""], correct: "" },
-    ]);
+    const newQuestion = {
+      question: "",
+      answers: ["", "", "", ""],
+      correct: "",
+    };
+    setQuestions([...questions, newQuestion]);
   };
 
-  const handleChange = (index, field, value) => {
-    const updatedQuestions = [...questions];
-    if (field === "question") {
-      updatedQuestions[index].question = value;
-    } else if (field.startsWith("answer")) {
-      const answerIndex = parseInt(field.substring(6), 10) - 1;
-      updatedQuestions[index].answers[answerIndex] = value;
-    } else if (field === "correct") {
-      updatedQuestions[index].correct = value;
-    }
+  const updateQuestion = (index, updatedQuestion) => {
+    const updatedQuestions = questions.map((q, i) =>
+      i === index ? updatedQuestion : q,
+    );
     setQuestions(updatedQuestions);
+  };
+
+  const submitQuiz = () => {
+    const quizData = {
+      title,
+      questions,
+    };
+    socket.emit("newQuiz", quizData);
+    setTitle("");
+    setQuestions([]);
   };
 
   return (
     <div>
-      <h3>CREATE YOUR QUIZ</h3>
-
-      {Auth.loggedIn() ? (
-        <form onSubmit={handleFormSubmit}>
-          <div>
-            <h4>What is the title of your quiz?</h4>
-            <input
-              placeholder="Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-            />
-          </div>
-
-          {questions.map((question, index) => (
-            <QuestionForm
-              key={index}
-              question={question}
-              handleChange={(field, value) => handleChange(index, field, value)}
-            />
-          ))}
-
-          <div>
-            <button type="button" onClick={addQuestion}>
-              Add Question
-            </button>
-            <button type="submit">Create Quiz</button>
-          </div>
-          {error && <div>{error.message}</div>}
-        </form>
-      ) : (
-        <p>
-          You need to be logged in to create a quiz. Please{" "}
-          <Link to="/login">login</Link> or <Link to="/signup">signup</Link>.
-        </p>
-      )}
+      <h3>Create Your Quiz</h3>
+      <input
+        type="text"
+        placeholder="Quiz Title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      {questions.map((question, index) => (
+        <QuestionForm
+          key={index}
+          questionIndex={index}
+          question={question}
+          updateQuestion={updateQuestion}
+        />
+      ))}
+      <button onClick={addQuestion}>Add Question</button>
+      <button onClick={submitQuiz}>Submit Quiz</button>
     </div>
   );
 };
 
 export default QuizForm;
-
