@@ -33,9 +33,13 @@ export const QUERY_ME = gql`
 export const QUERY_QUIZZES = gql`
   query allQuizzes {
     quizzes {
-      title
-      questions
       _id
+      title
+      questions {
+        questionText
+        answerOptions
+        correctAnswer
+      }
     }
   }
 `;

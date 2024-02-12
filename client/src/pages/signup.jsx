@@ -35,7 +35,7 @@ const Signup = () => {
       });
 
       Auth.login(data.addProfile.token);
-      // navigate("/dashboard");
+      navigate("/dashboard");
     } catch (e) {
       console.error(e);
     }
@@ -50,7 +50,7 @@ const Signup = () => {
             {data ? (
               <p>
                 Success! You may now head{" "}
-                <Link to="/">back to the homepage.</Link>
+                <Link to="/dashboard">back to the homepage.</Link>
               </p>
             ) : (
               <form onSubmit={handleFormSubmit}>

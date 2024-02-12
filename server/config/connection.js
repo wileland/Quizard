@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
+
 const connectDB = async () => {
   try {
     await mongoose.connect(
@@ -9,5 +10,7 @@ const connectDB = async () => {
     console.error("MongoDB connnection error: ", err.message);
   }
 };
+
 const db = connectDB;
 export default db;
+

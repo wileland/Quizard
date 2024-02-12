@@ -7,6 +7,10 @@ import { typeDefs, resolvers } from "./schemas/index.js";
 import db from "./config/connection.js";
 import initializeSocketIo from "./socketServer.js";
 import cors from "cors";
+import { authMiddleware } from "./utils/auth.js";
+import Profile from "./models/Profile.js";
+import Game from "./models/Game.js";
+import Quiz from "./models/Quiz.js";
 
 (async () => {
   try {
@@ -23,9 +27,7 @@ import cors from "cors";
     const apolloServer = new ApolloServer({
       typeDefs,
       resolvers,
-      //TODO: debug why context gives 500 internal server error
-      //keep it commented out until resolved.
-      //context: ({ req }) => ({ user: authMiddleware(req) }),
+      context: { authMiddleware },
     });
 
     await apolloServer.start();
@@ -33,7 +35,9 @@ import cors from "cors";
 
     const httpServer = createServer(app);
     initializeSocketIo(httpServer);
-
+    const profile = new Profile();
+    const game = new Game();
+    const quiz = new Quiz();
     httpServer.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
       console.log(
