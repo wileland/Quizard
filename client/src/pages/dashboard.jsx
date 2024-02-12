@@ -3,10 +3,10 @@ import { useQuery } from "@apollo/client";
 import { QUERY_QUIZZES } from "../utils/queries";
 import QuizList from "../components/QuizList";
 import CreateQuizButton from "../components/CreateQuizButton.jsx";
-
+import authService from "../utils/auth";
 const Dashboard = () => {
-  const { loading, data } = useQuery(QUERY_QUIZZES);
-
+  const { data } = useQuery(QUERY_QUIZZES);
+  const userProfile = authService.getProfile();
   return (
     <main>
       <h1>Welcome to the Quizard's Dashboard</h1>
@@ -15,11 +15,9 @@ const Dashboard = () => {
         the minds of your participants!
       </p>
       <CreateQuizButton />
-      {loading ? (
-        <p>Loading quizzes...</p>
-      ) : (
-        <QuizList quizzes={data.quizzes} />
-      )}
+      <p>Created Quizzes below</p>
+
+      <QuizList quizzes={data?.quizzes || []} hostId={userProfile._id} />
     </main>
   );
 };
