@@ -1,5 +1,3 @@
-//need pin, hostId, boolean value for gameActive
-// also will need game data
 import { Schema, SchemaTypes, model } from "mongoose";
 
 const gameSchema = new Schema({
