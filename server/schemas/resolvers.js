@@ -21,7 +21,7 @@ const resolvers = {
   },
   Mutation: {
     addQuiz: async (_, { title, questions, createdBy }) =>
-      Quiz.create({ title, questions, createdBy }),
+      await Quiz.create({ title, questions, createdBy }),
     removeQuiz: async (_, { quizId }) => Quiz.findOneAndDelete({ _id: quizId }),
     addProfile: async (_, { username, email, password }) => {
       const profile = await Profile.create({ username, email, password });
