@@ -1,9 +1,9 @@
-import { Schema, model } from "mongoose";
+import { Schema, SchemaTypes, model } from "mongoose";
 
 const quizSchema = new Schema(
   {
     title: { type: String, required: true },
-    createdBy: { type: Schema.Types.ObjectId, ref: "Profile", required: true },
+    createdBy: { type: SchemaTypes.ObjectId, ref: "Profile", required: true },
     questions: [
       {
         questionText: String,
