@@ -5,87 +5,62 @@ import { signToken, AuthenticationError } from "../utils/auth.js";
 
 const resolvers = {
   Query: {
-    getGame: async (parent, { hostId }) => {
-      return await Game.findOne({ hostId });
-    },
-    quizzes: async () => {
-      return Quiz.find().sort({ createdAt: -1 });
-    },
-    quiz: async (parent, { quizId }) => {
-      return Quiz.findOne({ _id: quizId });
-    },
-    profiles: async () => {
-      return Profile.find();
-    },
-    profile: async (parent, { profileId }) => {
-      return Profile.findOne({ _id: profileId });
-    },
-    getPlayer: async (parent, { playerId }) => {
-      return await Profile.findOne({ playerId });
-    },
-    getPlayers: async (parent, { hostId }) => {
-      return await Profile.find({ hostId });
-    },
-    me: async (parent, args, context) => {
+    getGame: async (_, { hostId }) => Game.findOne({ hostId }),
+    quizzes: async () => Quiz.find().sort({ createdAt: -1 }),
+    quiz: async (_, { quizId }) => Quiz.findOne({ _id: quizId }),
+    profiles: async () => Profile.find(),
+    profile: async (_, { profileId }) => Profile.findOne({ _id: profileId }),
+    getPlayer: async (_, { playerId }) => Profile.findOne({ _id: playerId }),
+    getPlayers: async (_, { hostId }) => Profile.find({ hostId }),
+    me: async (_, __, context) => {
       if (context.user) {
         return Profile.findOne({ _id: context.user._id });
       }
-      throw new AuthenticationError();
+      throw new AuthenticationError("User not authenticated");
     },
   },
   Mutation: {
-    addQuiz: async (parent, { title, questions }) => {
-      return Quiz.create({ title, questions });
-    },
-    removeQuiz: async (parent, { quizId }) => {
-      return Quiz.findOneAndDelete({ _id: quizId });
-    },
-    addProfile: async (parent, { username, email, password }) => {
+    addQuiz: async (_, { title, questions, createdBy }) =>
+      Quiz.create({ title, questions, createdBy }),
+    removeQuiz: async (_, { quizId }) => Quiz.findOneAndDelete({ _id: quizId }),
+    addProfile: async (_, { username, email, password }) => {
       const profile = await Profile.create({ username, email, password });
       const token = signToken(profile);
       return { token, profile };
     },
-    login: async (parent, { email, password }) => {
+    login: async (_, { email, password }) => {
       const profile = await Profile.findOne({ email });
       if (!profile) {
-        throw new AuthenticationError();
+        throw new AuthenticationError("Profile not found");
       }
       const correctPw = await profile.isCorrectPassword(password);
       if (!correctPw) {
-        throw new AuthenticationError();
+        throw new AuthenticationError("Incorrect password");
       }
       const token = signToken(profile);
       return { token, profile };
     },
-    removeProfile: async (parent, args, context) => {
+    removeProfile: async (_, __, context) => {
       if (context.user) {
         return Profile.findOneAndDelete({ _id: context.user._id });
       }
-      throw new AuthenticationError();
+      throw new AuthenticationError("User not authenticated");
     },
-    addPlayer: async (parent, { hostId, playerId, username, gameData }) => {
-      const newPlayer = new Profile({
-        hostId,
-        playerId,
-        username,
-        gameData,
-      });
+    addPlayer: async (_, { hostId, playerId, username, gameData }) => {
+      const newPlayer = new Profile({ hostId, playerId, username, gameData });
       await newPlayer.save();
       return newPlayer;
     },
-    removePlayer: async (parent, { playerId }) => {
-      return await Profile.findOneAndDelete({ playerId });
-    },
-    addGame: async (parent, { pin, hostId, gameLive, gameData }) => {
+    removePlayer: async (_, { playerId }) =>
+      Profile.findOneAndDelete({ _id: playerId }),
+    addGame: async (_, { pin, hostId, gameLive, gameData }) => {
       const newGame = new Game({ pin, hostId, gameLive, gameData });
       await newGame.save();
       return newGame;
     },
-    removeGame: async (parent, { hostId }) => {
-      return await Game.findOneAndDelete({ hostId });
-    },
+    removeGame: async (_, { hostId }) => Game.findOneAndDelete({ hostId }),
     addQuestion: async (
-      parent,
+      _,
       { quizId, question, answerOptions, correctAnswer },
       context,
     ) => {
@@ -105,28 +80,23 @@ const resolvers = {
         );
         return updatedQuiz;
       }
-      throw new AuthenticationError("User not authenticated!!");
+      throw new AuthenticationError("User not authenticated");
     },
-    removeQuestion: async (parent, { question }, context) => {
+    removeQuestion: async (_, { quizId, questionText }, context) => {
       if (context.user) {
         return Quiz.findOneAndUpdate(
-          { _id: context.user._id },
-          { $pull: { questions: { questionText: question } } },
+          { _id: quizId },
+          { $pull: { questions: { questionText } } },
           { new: true },
         );
       }
-      throw new AuthenticationError();
+      throw new AuthenticationError("User not authenticated");
     },
-    activateQuiz: async (parent, { id, isActive }, context) => {
+    activateQuiz: async (_, { quizId, isActive }, context) => {
       if (context.user) {
-        const updatedQuiz = await Quiz.findByIdAndUpdate(
-          id,
-          { isActive },
-          { new: true },
-        );
-        return updatedQuiz;
+        return Quiz.findByIdAndUpdate(quizId, { isActive }, { new: true });
       }
-      throw new AuthenticationError("You must be logged in to activate a quiz");
+      throw new AuthenticationError("User not authenticated");
     },
   },
 };
