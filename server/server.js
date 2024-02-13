@@ -5,7 +5,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { typeDefs, resolvers } from "./schemas/index.js";
 import db from "./config/connection.js";
-import initializeSocketIo from "./socketServer.js";
+// import initializeSocketIo from "./socketServer.js";
 import cors from "cors";
 import { authMiddleware } from "./utils/auth.js";
 import Profile from "./models/Profile.js";
@@ -34,7 +34,7 @@ import Quiz from "./models/Quiz.js";
     apolloServer.applyMiddleware({ app });
 
     const httpServer = createServer(app);
-    initializeSocketIo(httpServer);
+    // initializeSocketIo(httpServer);
     const profile = new Profile();
     const game = new Game();
     const quiz = new Quiz();

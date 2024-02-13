@@ -1,13 +1,19 @@
 import React from "react";
-import QuizItem from "./QuizItem.jsx";
 
-const QuizList = ({ quizzes, hostId }) => {
+const QuizList = ({ quizzes }) => {
   console.log(quizzes);
   return (
     <div>
-      {quizzes.map((quiz) => (
-        <QuizItem key={quiz._id} quiz={quiz} hostId={hostId} />
-      ))}
+      {quizzes.length ? (
+        quizzes.map((quiz, index) => (
+          <div key={index}>
+            <h3>{quiz.title}</h3>
+            {/* Add more details as needed */}
+          </div>
+        ))
+      ) : (
+        <p>No quizzes found.</p>
+      )}
     </div>
   );
 };

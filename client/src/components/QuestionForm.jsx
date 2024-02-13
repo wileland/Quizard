@@ -9,7 +9,7 @@ const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
       newAnswers[index] = e.target.value;
       updateQuestion(questionIndex, { ...question, answers: newAnswers });
     } else if (field === "correct") {
-      updateQuestion(questionIndex, { ...question, correct: e.target.value });
+      updateQuestion(questionIndex, { ...question, correctAnswer: e.target.value });
     }
   };
 
@@ -33,7 +33,7 @@ const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
       <input
         type="number"
         placeholder="Correct answer number"
-        value={question.correct}
+        value={question.correctAnswer}
         onChange={(e) => handleInputChange(e, "correct")}
         min="1"
         max="4"
