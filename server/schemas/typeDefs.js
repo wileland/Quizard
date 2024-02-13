@@ -22,21 +22,36 @@ const typeDefs = gql`
     _id: ID!
     title: String!
     createdBy: ID!
-    questions: [Question!]!
-    isActive: Boolean!
+    questions: [Whatever!]!
+    isActive: Boolean
   }
 
-  type Question {
-    _id: ID!
+  type Whatever {
     questionText: String!
-    answerOptions: [String!]!
+    answerOptions: [Answers]!
+    correctAnswer: String!
+  }
+
+  type Answers {
+    option: String!
+  } 
+
+
+  type Question {
+    _id: ID
+    questionText: String!
+    answerOptions: [String]!
     correctAnswer: String!
   }
 
   input QuestionInput {
     questionText: String!
-    answerOptions: [String!]!
+    answerOptions: [AnswersInput]!
     correctAnswer: String!
+  }
+
+  input AnswersInput {
+    option: String!
   }
 
   type Auth {
@@ -59,7 +74,7 @@ const typeDefs = gql`
     addProfile(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     removeProfile: Profile
-    addQuiz(title: String!, questions: [QuestionInput]!): Quiz
+    addQuiz(title: String!, questions: [QuestionInput]!, createdBy: ID!): Quiz!
     removeQuiz(quizId: ID!): Quiz
     activateQuiz(id: ID!, isActive: Boolean!): Quiz
     addQuestion(quizId: ID!, question: QuestionInput!): Quiz
