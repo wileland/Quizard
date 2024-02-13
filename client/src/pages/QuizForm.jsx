@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import QuestionForm from "../components/QuestionForm.jsx";
 import io from "socket.io-client";
-import authService from "../utils/auth"; // Adjust the path as per your structure
-
+import authService from "../utils/auth";
 const socket = io("http://localhost:3001");
 
 const QuizForm = () => {
@@ -47,6 +46,11 @@ const QuizForm = () => {
       questions,
       createdBy: userProfile._id, // Correctly use _id from userProfile
     };
+    const isValidQuiz = questions.every((q) => q.question.trim() !== "");
+    if (!isValidQuiz) {
+      alert("Every question must have text.");
+      return; // Prevent submission
+    }
     socket.emit("newQuiz", { token, quizData });
     setTitle("");
     setQuestions([]);

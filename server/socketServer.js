@@ -53,10 +53,10 @@ const initializeSocketIo = (httpServer) => {
       }
     });
 
-    //display rendered quizzes
-    // socket.on("renderQuizzes", async () => {
+    // display rendered quizzes
+    // socket.on("renderQuizzes", async (data) => {
     //
-    // });
+    //  });
 
     socket.on("startGame", async ({ quizId, hostId }) => {
       const pin = generateUniquePin();
