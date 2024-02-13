@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../utils/mutations";
-
+import { motion } from 'framer-motion';
 import Auth from "../utils/auth.js";
 
 const Login = (props) => {
@@ -43,7 +43,13 @@ const Login = (props) => {
   };
 
   return (
-    <main className="flex-row justify-center mb-4">
+    <motion.main
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+      className="flex-row justify-center mb-4"
+    >
       <div className="col-12 col-lg-10">
         <div className="card">
           <h4 className="card-header bg-dark text-light p-2">Login</h4>
@@ -71,25 +77,34 @@ const Login = (props) => {
                   value={formState.password}
                   onChange={handleChange}
                 />
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  transition={{ duration: 0.2 }}
                   className="btn btn-block btn-info"
                   style={{ cursor: "pointer" }}
                   type="submit"
                 >
                   Submit
-                </button>
+                </motion.button>
               </form>
             )}
 
             {error && (
-              <div className="my-3 p-3 bg-danger text-white">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="my-3 p-3 bg-danger text-white"
+              >
                 {error.message}
-              </div>
+              </motion.div>
             )}
           </div>
         </div>
       </div>
-    </main>
+    </motion.main>
   );
 };
 

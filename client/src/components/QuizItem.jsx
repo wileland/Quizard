@@ -25,18 +25,18 @@ const QuizItem = ({ quiz, hostId }) => {
   });
 
   return (
-    <div className="quiz-item">
-      <h3>{quiz.title}</h3>
-      {/* Other buttons like Edit, Delete can be here */}
+    <div className="quiz-item bg-neon-purple p-4 rounded-lg shadow-md">
+      <h3 className="text-white">{quiz.title}</h3>
       <motion.button
         variants={buttonVariants}
         whileHover="hover"
         onClick={() => startGame()}
         disabled={loading}
+        className="bg-neon-yellow text-black px-4 py-2 rounded-md mt-2 focus:outline-none"
       >
         Start Game
       </motion.button>
-      {error && <p>Error starting game: {error.message}</p>}
+      {error && <p className="text-red-500">Error starting game: {error.message}</p>}
     </div>
   );
 };

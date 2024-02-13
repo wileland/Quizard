@@ -16,12 +16,13 @@ const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
 
   return (
     <motion.div
-      className="question-form-container"
+      className="question-form-container bg-neon-blue p-4 rounded-lg shadow-md"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       style={{ marginBottom: "20px" }}
     >
       <input
+        className="w-full bg-white border-b-2 border-neon-pink py-2 px-4 mb-4 rounded-md focus:outline-none focus:border-neon-yellow"
         type="text"
         placeholder={`Question ${questionIndex + 1}`}
         value={question.question}
@@ -30,6 +31,7 @@ const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
       {question.answers.map((answer, index) => (
         <input
           key={index}
+          className="w-full bg-white border-b-2 border-neon-pink py-2 px-4 mb-4 rounded-md focus:outline-none focus:border-neon-yellow"
           type="text"
           placeholder={`Answer ${index + 1}`}
           value={answer}
@@ -37,6 +39,7 @@ const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
         />
       ))}
       <input
+        className="w-full bg-white border-b-2 border-neon-pink py-2 px-4 mb-4 rounded-md focus:outline-none focus:border-neon-yellow"
         type="number"
         placeholder="Correct answer number"
         value={question.correctAnswer}

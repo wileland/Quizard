@@ -28,32 +28,32 @@ const Header = () => {
   };
 
   return (
-    <nav>
-      <div>
+    <nav className="bg-neon-purple">
+      <div className="flex items-center justify-between px-4 py-3">
         {/* Logo of a wizard goes here */}
-        <span>Logo</span>
-        
+        <span className="text-white text-2xl font-wizard">Logo</span>
+
         <motion.div
           className="menu-container"
           variants={menuVariants}
           initial="hidden"
           animate={isOpen ? "visible" : "hidden"}
         >
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
+          <ul className="flex">
+            <li className="ml-4">
+              <Link to="/" className="text-white hover:text-neon-blue">Home</Link>
             </li>
-            <li>
-              <Link to="/login">Login</Link>
+            <li className="ml-4">
+              <Link to="/login" className="text-white hover:text-neon-blue">Login</Link>
             </li>
-            <li>
-              <Link to="/signup">Signup</Link>
+            <li className="ml-4">
+              <Link to="/signup" className="text-white hover:text-neon-blue">Signup</Link>
             </li>
           </ul>
         </motion.div>
 
         <button onClick={toggleMenu}>
-          {isOpen ? <FaTimes /> : <CiMenuFries />}
+          {isOpen ? <FaTimes className="text-white" /> : <CiMenuFries className="text-white" />}
         </button>
       </div>
     </nav>

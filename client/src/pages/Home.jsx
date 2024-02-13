@@ -1,31 +1,39 @@
 import React, { useEffect, useState, useRef } from "react";
-// import { io } from "socket.io-client";
+import { motion } from 'framer-motion';
 
 const Home = () => {
   const [gameCode, setGameCode] = useState("");
-  const socket = useRef(null);
+  const inputRef = useRef(null);
 
-
-  // function joinGame() {
-  //   if (gameCode.trim()) {
-  //     socket.current.emit("joinGame", gameCode);
-  //   } else {
-  //     console.log("INVALID GAME CODE !!");
-  //   }
-  // }
+  useEffect(() => {
+    inputRef.current.focus();
+  }, []);
 
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+    >
       <input
+        ref={inputRef}
         type="text"
         placeholder="Enter Lobby Code"
         value={gameCode}
         onChange={(e) => setGameCode(e.target.value)}
       />
-      {/* <button type="button" onClick={joinGame}>
+      {/* Add motion effects to the button if uncommented */}
+      {/* <motion.button
+        whileHover={{ scale: 1.1 }}
+        whileTap={{ scale: 0.9 }}
+        transition={{ duration: 0.2 }}
+        type="button"
+        onClick={joinGame}
+      >
         Join!
-      </button> */}
-    </div>
+      </motion.button> */}
+    </motion.div>
   );
 };
 
