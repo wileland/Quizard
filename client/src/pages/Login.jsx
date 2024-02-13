@@ -1,11 +1,11 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useMutation } from "@apollo/client";
 import { LOGIN_USER } from "../utils/mutations";
 import { motion } from 'framer-motion';
 import Auth from "../utils/auth.js";
 
-const Login = (props) => {
+const Login = () => {
   const [formState, setFormState] = useState({ email: "", password: "" });
   const [login, { error, data }] = useMutation(LOGIN_USER);
   const navigate = useNavigate();
@@ -23,7 +23,6 @@ const Login = (props) => {
   // submit form
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(formState);
     try {
       const { data } = await login({
         variables: { ...formState },
@@ -48,61 +47,49 @@ const Login = (props) => {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.5 }}
-      className="flex-row justify-center mb-4"
+      className="flex flex-col items-center justify-center h-screen bg-neon-purple text-white"
     >
-      <div className="col-12 col-lg-10">
-        <div className="card">
-          <h4 className="card-header bg-dark text-light p-2">Login</h4>
-          <div className="card-body">
-            {data ? (
-              <p>
-                Success! You may now head{" "}
-                <Link to="/dashboard">back to the homepage.</Link>
-              </p>
-            ) : (
-              <form onSubmit={handleFormSubmit}>
-                <input
-                  className="form-input"
-                  placeholder="Your email"
-                  name="email"
-                  type="email"
-                  value={formState.email}
-                  onChange={handleChange}
-                />
-                <input
-                  className="form-input"
-                  placeholder="******"
-                  name="password"
-                  type="password"
-                  value={formState.password}
-                  onChange={handleChange}
-                />
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  transition={{ duration: 0.2 }}
-                  className="btn btn-block btn-info"
-                  style={{ cursor: "pointer" }}
-                  type="submit"
-                >
-                  Submit
-                </motion.button>
-              </form>
-            )}
-
-            {error && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="my-3 p-3 bg-danger text-white"
-              >
-                {error.message}
-              </motion.div>
-            )}
-          </div>
-        </div>
+      <div className="card bg-gray-900 text-white p-6 rounded-md shadow-md">
+        <h4 className="text-lg font-semibold mb-4">Login</h4>
+        {data ? (
+          <p>
+            Success! You may now head{" "}
+            <Link to="/dashboard" className="text-neon-blue hover:underline">
+              back to the homepage.
+            </Link>
+          </p>
+        ) : (
+          <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+            <input
+              className="input-field"
+              placeholder="Your email"
+              name="email"
+              type="email"
+              value={formState.email}
+              onChange={handleChange}
+            />
+            <input
+              className="input-field"
+              placeholder="Password"
+              name="password"
+              type="password"
+              value={formState.password}
+              onChange={handleChange}
+            />
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              className="btn btn-info w-full"
+              type="submit"
+            >
+              Submit
+            </motion.button>
+          </form>
+        )}
+        {error && (
+          <p className="mt-4 text-red-500">{error.message}</p>
+        )}
       </div>
     </motion.main>
   );
