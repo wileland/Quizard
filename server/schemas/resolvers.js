@@ -1,76 +1,108 @@
-import Quiz from '../models/Quiz.js';
-import Profile from '../models/Profile.js';
-import { signToken, AuthenticationError } from '../utils/auth.js';
+import Quiz from "../models/Quiz.js";
+import Profile from "../models/Profile.js";
+import Game from "../models/Game.js";
+import { signToken, AuthenticationError } from "../utils/auth.js";
 
 const resolvers = {
   Query: {
-    // find all quizzes 
-    quizzes: async () => {
-      return Quiz.find().sort({ createdAt: -1 });
-    },
-    // find one quiz
-    quiz: async (parent, { quizId }) => {
-      return Quiz.findOne({ _id: quizId });
-    },
-    // find all profiles
-    profiles: async () => {
-      return Profile.find();
-    },
-    // find one profile by id
-    profile: async (parent, { profileId }) => {
-      return Profile.findOne({ _id: profileId });
-    },
-    // Retrieve the logged in user
-    me: async (parent, args, context) => {
+    getGame: async (_, { hostId }) => Game.findOne({ hostId }),
+    quizzes: async () =>  Quiz.find,
+    quiz: async (_, { quizId }) => await Quiz.findOne({ _id: quizId }),
+    profiles: async () => Profile.find(),
+    profile: async (_, { profileId }) => Profile.findOne({ _id: profileId }),
+    getPlayer: async (_, { playerId }) => Profile.findOne({ _id: playerId }),
+    getPlayers: async (_, { hostId }) => Profile.find({ hostId }),
+    me: async (_, __, context) => {
       if (context.user) {
         return Profile.findOne({ _id: context.user._id });
       }
-      throw new AuthenticationError('Not logged in');
+      throw new AuthenticationError("User not authenticated");
     },
   },
   Mutation: {
-    // create a new quiz
-    addQuiz: async (parent, { quizQuestion, quizAnswer }) => {
-      return Quiz.create({ quizQuestion, quizAnswer });
+    addQuiz: async (_, { title, questions, createdBy }) => {
+      questions.forEach((question) => {
+        if (!question.questionText) {
+          throw new Error("Each question must have a questionText");
+        }
+      });
+      return await Quiz.create({ title, questions, createdBy });
     },
-    // delete quiz
-    removeQuiz: async (parent, { quizId }) => {
-      return Quiz.findOneAndDelete({ _id: quizId });
-    },
-    // create new profile (SIGN UP)
-    addProfile: async (parent, { username, email, password }) => {
+    removeQuiz: async (_, { quizId }) => Quiz.findOneAndDelete({ _id: quizId }),
+    addProfile: async (_, { username, email, password }) => {
       const profile = await Profile.create({ username, email, password });
       const token = signToken(profile);
-      console.log('profile', profile, 'token', token);
       return { token, profile };
     },
-    // LOGIN
-    login: async (parent, { email, password }) => {
+    login: async (_, { email, password }) => {
       const profile = await Profile.findOne({ email });
-
       if (!profile) {
-        throw new AuthenticationError('Incorrect email or password');
+        throw new AuthenticationError("Profile not found");
       }
-
       const correctPw = await profile.isCorrectPassword(password);
-
       if (!correctPw) {
-        throw new AuthenticationError('Incorrect email or password');
+        throw new AuthenticationError("Incorrect password");
       }
-
       const token = signToken(profile);
       return { token, profile };
     },
-    // delete profile
-    removeProfile: async (parent, args, context) => {
+    removeProfile: async (_, __, context) => {
       if (context.user) {
         return Profile.findOneAndDelete({ _id: context.user._id });
       }
-      throw new AuthenticationError('Not logged in');
+      throw new AuthenticationError("User not authenticated");
     },
-    // Activate or deactivate a quiz
-    activateQuiz: async (parent, { id, isActive }) => {
-      return await Quiz.findByIdAndUpdate(id, { isActive }, { new: true });
+    addPlayer: async (_, { hostId, playerId, username, gameData }) => {
+      const newPlayer = new Profile({ hostId, playerId, username, gameData });
+      await newPlayer.save();
+      return newPlayer;
+    },
+    removePlayer: async (_, { playerId }) =>
+      Profile.findOneAndDelete({ _id: playerId }),
+    addGame: async (_, { pin, hostId, gameLive, gameData }) => {
+      const newGame = new Game({ pin, hostId, gameLive, gameData });
+      await newGame.save();
+      return newGame;
+    },
+    removeGame: async (_, { hostId }) => Game.findOneAndDelete({ hostId }),
+    addQuestion: async (
+      _,
+      { quizId, question, answerOptions, correctAnswer },
+      context,
+    ) => {
+      if (context.user) {
+        const updatedQuiz = await Quiz.findOneAndUpdate(
+          { _id: quizId },
+          {
+            $addToSet: {
+              questions: {
+                questionText: question,
+                answerOptions,
+                correctAnswer,
+              },
+            },
+          },
+          { new: true, runValidators: true },
+        );
+        return updatedQuiz;
+      }
+      throw new AuthenticationError("User not authenticated");
+    },
+    removeQuestion: async (_, { quizId, questionText }, context) => {
+      if (context.user) {
+        return Quiz.findOneAndUpdate(
+          { _id: quizId },
+          { $pull: { questions: { questionText } } },
+          { new: true },
+        );
+      }
+      throw new AuthenticationError("User not authenticated");
+    },
+    activateQuiz: async (_, { quizId, isActive }, context) => {
+      if (context.user) {
+        return Quiz.findByIdAndUpdate(quizId, { isActive }, { new: true });
+      }
+      throw new AuthenticationError("User not authenticated");
     },
   },
 };

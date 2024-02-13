@@ -1,14 +1,57 @@
-const typeDefs = `
+import { gql } from "apollo-server-express";
+
+const typeDefs = gql`
+  type Game {
+    id: ID!
+    hostId: ID!
+    pin: String!
+    gameLive: Boolean!
+    gameData: String
+  }
+
   type Profile {
-    _id: ID
-    username: String
-    email: String
+    _id: ID!
+    hostId: ID
+    playerId: ID
+    username: String!
+    email: String!
+    gameData: String
   }
 
   type Quiz {
+    _id: ID!
+    title: String!
+    createdBy: ID!
+    questions: [Whatever!]!
+    isActive: Boolean
+  }
+
+  type Whatever {
+    questionText: String!
+    answerOptions: [Answers]!
+    correctAnswer: String!
+  }
+
+  type Answers {
+    option: String!
+  } 
+
+
+  type Question {
     _id: ID
-    title: String
-    questions: [String]
+    questionText: String!
+    answerOptions: [String]!
+    correctAnswer: String!
+  }
+
+  input QuestionInput {
+    questionText: String!
+    answerOptions: [AnswersInput]!
+    correctAnswer: String!
+  }
+
+  input AnswersInput {
+    option: String!
   }
 
   type Auth {
@@ -19,9 +62,11 @@ const typeDefs = `
   type Query {
     profiles: [Profile]!
     profile(profileId: ID!): Profile
-    quizzes: [Quiz]
+    quizzes: [Quiz]!
     quiz(quizId: ID!): Quiz
-    # Because we have the context functionality in place to check a JWT and decode its data, we can use a query that will always find and return the logged in user's data
+    getPlayer(playerId: ID!): Profile
+    getPlayers(hostId: ID!): [Profile]!
+    getGame(hostId: ID!): Game
     me: Profile
   }
 
@@ -29,10 +74,25 @@ const typeDefs = `
     addProfile(username: String!, email: String!, password: String!): Auth
     login(email: String!, password: String!): Auth
     removeProfile: Profile
-    addQuiz(quizQuestion: String!, quizAnswer: String!): Quiz
-    removeQuiz: Quiz
-    # Activate or deactivate a quiz
+    addQuiz(title: String!, questions: [QuestionInput]!, createdBy: ID!): Quiz!
+    removeQuiz(quizId: ID!): Quiz
     activateQuiz(id: ID!, isActive: Boolean!): Quiz
+    addQuestion(quizId: ID!, question: QuestionInput!): Quiz
+    removeQuestion(quizId: ID!, questionText: String!): Quiz
+    addPlayer(
+      hostId: ID!
+      playerId: ID!
+      username: String!
+      gameData: String!
+    ): Profile
+    removePlayer(playerId: ID!): Profile
+    addGame(
+      pin: String!
+      hostId: ID!
+      gameLive: Boolean!
+      gameData: String!
+    ): Game
+    removeGame(hostId: ID!): Game
   }
 `;
 

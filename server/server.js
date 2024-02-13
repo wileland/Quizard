@@ -1,68 +1,50 @@
-/* eslint-disable no-undef */
-import express from 'express';
-import { createServer } from 'http';
-import { ApolloServer } from 'apollo-server-express';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { typeDefs, resolvers } from './schemas/index.js';
-import { authMiddleware } from './utils/auth.js';
-import initializeSocketIo from './socketServer.js';
-import mongoose from 'mongoose';
+import express from "express";
+import { createServer } from "http";
+import { ApolloServer } from "apollo-server-express";
+import path from "path";
+import { fileURLToPath } from "url";
+import { typeDefs, resolvers } from "./schemas/index.js";
+import db from "./config/connection.js";
+// import initializeSocketIo from "./socketServer.js";
+import cors from "cors";
+import { authMiddleware } from "./utils/auth.js";
+import Profile from "./models/Profile.js";
+import Game from "./models/Game.js";
+import Quiz from "./models/Quiz.js";
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
-// MongoDB connection string
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/QuizardDB';
-
-// Connect to MongoDB
-const connectDB = async () => {
+(async () => {
   try {
-    await mongoose.connect(MONGODB_URI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
+    const __dirname = path.dirname(fileURLToPath(import.meta.url));
+    const app = express();
+    const PORT = process.env.PORT || 3001;
+
+    app.use(cors());
+    app.use(express.static(path.join(__dirname, "client", "build")));
+
+    await db();
+    console.log("Connected to MongoDB");
+
+    const apolloServer = new ApolloServer({
+      typeDefs,
+      resolvers,
+      context: { authMiddleware },
     });
-    console.log('MongoDB Connected');
+
+    await apolloServer.start();
+    apolloServer.applyMiddleware({ app });
+
+    const httpServer = createServer(app);
+    // initializeSocketIo(httpServer);
+    const profile = new Profile();
+    const game = new Game();
+    const quiz = new Quiz();
+    httpServer.listen(PORT, () => {
+      console.log(`API server running on port ${PORT}!`);
+      console.log(
+        `GraphQL here: http://localhost:${PORT}${apolloServer.graphqlPath}`,
+      );
+    });
   } catch (error) {
-    console.error(`Error connecting to MongoDB: ${error.message}`);
-    process.exit(1);
+    console.error("Server startup error:", error);
   }
-};
-
-connectDB(); // Initiate MongoDB connection
-
-const app = express();
-const PORT = process.env.PORT || 3001;
-
-// Serve static files from the React app
-app.use(express.static(path.join(__dirname, '../client/build')));
-
-// Apollo Server setup
-const apolloServer = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ req }) => ({ user: authMiddleware(req) }),
-});
-
-apolloServer.start().then(() => {
-  apolloServer.applyMiddleware({ app });
-
-  const httpServer = createServer(app);
-  initializeSocketIo(httpServer);
-
-  app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/build/index.html'));
-  });
-
-  httpServer.listen(PORT, () => {
-    console.log(`API server running on port ${PORT}!`);
-    console.log(`Use GraphQL at http://localhost:${PORT}${apolloServer.graphqlPath}`);
-  });
-}).catch((error) => {
-  console.error('Error starting Apollo Server:', error);
-});
-
-// Error handling middleware
-app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(500).send('Internal Server Error');
-});
+})();

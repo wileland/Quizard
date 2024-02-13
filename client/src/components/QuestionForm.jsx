@@ -1,90 +1,45 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useMutation } from "@apollo/client";
-import QuestionForm from '../components/QuestionForm'
-import { ADD_QUIZ } from "../utils/mutations";
+import React from "react";
 
-import Auth from "../utils/auth";
-
-const QuizForm = ({ quizId }) => {
-  const [title, setTitle] = useState("");
-  const [questionNumber, setQuestionNumber] = useState(0);
-  const [questions, setQuestions] = useState([]);
-
-
-  const [addQuiz, { error }] = useMutation(ADD_QUIZ);
-
-  const handleFormSubmit = async (event) => {
-    event.preventDefault();
-
-    try {
-      const data = await addQuiz({
-        variables: {
-          quizId,
-          title,
-          questionNumber,
-          questions,
-        },
-      });
-
-      setTitle('');
-      setQuestionNumber(0);
-      setQuestions([]);
-    } catch (err) {
-      console.error(err);
+const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
+  const handleInputChange = (e, field, index) => {
+    if (field === "question") {
+      updateQuestion(questionIndex, { ...question, question: e.target.value });
+    } else if (field.startsWith("answer")) {
+      const newAnswers = [...question.answers];
+      newAnswers[index] = e.target.value;
+      updateQuestion(questionIndex, { ...question, answers: newAnswers });
+    } else if (field === "correct") {
+      updateQuestion(questionIndex, { ...question, correctAnswer: e.target.value });
     }
   };
 
-  const addQuestionData = (questionData) => {
-    setQuestions([...questions, questionData]);
-  };
-
   return (
-    <div>
-        <h3>CREATE YOUR QUIZ</h3>
-
-        {Auth.loggedIn() ? (
-            <form
-            className=''
-            onSubmit={handleFormSubmit}>
-                <div className=''>
-                    <input 
-                    placeholder='Title'
-                    value={title}
-                    className=''
-                    onChange={(event) => setTitle(event.target.value)} 
-                    />
-                </div>
-
-                <div>
-                    <input
-                    type='number'
-                    placeholder='Number of Questions'
-                    value={questionNumber}
-                    onChange={(event) => setQuestionNumber(parseInt(event.target.value))}
-                />
-                </div>
-
-                <div>
-                    <button type='submit'>Create Quiz</button>
-                </div>
-                {error && (
-                    <div className=''>
-                        {error.message}
-                    </div>
-                )}
-            </form>
-        ):(
-        <p>
-            You need to be logged in to create a quiz. Please {' '}
-            <Link to='/login'>login</Link> or <Link to='/signup'>signup</Link>
-        </p>
-        )}
-
-         {/* Render QuestionForm component */}
-      <QuestionForm quizId={quizId} />
+    <div style={{ marginBottom: "20px" }}>
+      <input
+        type="text"
+        placeholder={`Question ${questionIndex + 1}`}
+        value={question.question}
+        onChange={(e) => handleInputChange(e, "question")}
+      />
+      {question.answers.map((answer, index) => (
+        <input
+          key={index}
+          type="text"
+          placeholder={`Answer ${index + 1}`}
+          value={answer}
+          onChange={(e) => handleInputChange(e, "answer", index)}
+        />
+      ))}
+      <input
+        type="number"
+        placeholder="Correct answer number"
+        value={question.correctAnswer}
+        onChange={(e) => handleInputChange(e, "correct")}
+        min="1"
+        max="4"
+      />
     </div>
   );
 };
 
-export default QuizForm;
+export default QuestionForm;

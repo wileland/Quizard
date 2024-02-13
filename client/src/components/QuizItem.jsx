@@ -1,45 +1,28 @@
-import React from 'react';
-import { useMutation } from '@apollo/client';
-import { REMOVE_QUIZ, ACTIVATE_QUIZ } from '../utils/mutations';
-import { QUERY_QUIZZES } from '../utils/queries';
+// import React from "react";
+// import { useMutation } from "@apollo/client";
+// import { START_GAME } from "../utils/mutations";
 
-const QuizItem = ({ quiz }) => {
-  const [removeQuiz] = useMutation(REMOVE_QUIZ, {
-    variables: { _id: quiz._id },
-    refetchQueries: [{ query: QUERY_QUIZZES }],
-  });
+// const QuizItem = ({ quiz, hostId }) => {
+//   const [startGame, { data, loading, error }] = useMutation(START_GAME, {
+//     variables: { hostId, quizId: quiz._id },
+//     onCompleted: (data) => {
+//       alert(`Game started! PIN: ${data.addGame.pin}`);
+//     },
+//     onError: (error) => {
+//       alert(`Error starting game: ${error.message}`);
+//     },
+//   });
 
-  const [activateQuiz] = useMutation(ACTIVATE_QUIZ, {
-    variables: { id: quiz._id },
-    // Optimistic update can be used here to reflect the changes immediately,
-    // then confirm with the result from the server.
-  });
+//   return (
+//     <div className="quiz-item">
+//       <h3>{quiz.title}</h3>
+//       {/* Other buttons like Edit, Delete can be here */}
+//       <button onClick={() => startGame()} disabled={loading}>
+//         Start Game
+//       </button>
+//       {error && <p>Error starting game: {error.message}</p>}
+//     </div>
+//   );
+// };
 
-  const handleRemoveQuiz = async () => {
-    try {
-      await removeQuiz();
-    } catch (e) {
-      console.error('Error removing a quiz:', e);
-    }
-  };
-
-  const handleActivateQuiz = async () => {
-    try {
-      await activateQuiz();
-      // Optionally handle UI update or show a notification
-    } catch (e) {
-      console.error('Error activating a quiz:', e);
-    }
-  };
-
-  return (
-    <div className="quiz-item">
-      <h3>{quiz.title}</h3>
-      <button onClick={handleActivateQuiz}>Activate</button>
-      <button onClick={handleRemoveQuiz}>Delete</button>
-    </div>
-  );
-};
-
-export default QuizItem;
-
+// export default QuizItem;

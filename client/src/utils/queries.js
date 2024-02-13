@@ -5,7 +5,7 @@ export const QUERY_PROFILES = gql`
     profiles {
       _id
       username
-      quizzes
+      email
     }
   }
 `;
@@ -15,7 +15,7 @@ export const QUERY_SINGLE_PROFILE = gql`
     profile(profileId: $profileId) {
       _id
       username
-      quizzes
+      email
     }
   }
 `;
@@ -24,18 +24,40 @@ export const QUERY_ME = gql`
   query me {
     me {
       _id
-      name
-      quizzes
+      username
+      email
     }
   }
 `;
 
 export const QUERY_QUIZZES = gql`
-  query allQuizzes {
+  query quizzes {
     quizzes {
       title
-      questions
+      questions {
+        questionText
+        correctAnswer
+        answerOptions {
+          option
+        }
+      }
+      isActive
       _id
+    }
+  }
+`;
+
+export const QUERY_SINGLE_QUIZ = gql`
+  query singleQuiz($quizId: ID!) {
+    quiz(quizId: $quizId) {
+      _id
+      title
+      questions {
+        questionText
+        answerOptions
+        correctAnswer
+      }
+      isActive
     }
   }
 `;
