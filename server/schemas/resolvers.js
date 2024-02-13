@@ -6,8 +6,8 @@ import { signToken, AuthenticationError } from "../utils/auth.js";
 const resolvers = {
   Query: {
     getGame: async (_, { hostId }) => Game.findOne({ hostId }),
-    quizzes: async () => Quiz.find().sort({ createdAt: -1 }),
-    quiz: async (_, { quizId }) => Quiz.findOne({ _id: quizId }),
+    quizzes: async () => await Quiz.find().sort({ createdAt: -1 }),
+    quiz: async (_, { quizId }) => await Quiz.findOne({ _id: quizId }),
     profiles: async () => Profile.find(),
     profile: async (_, { profileId }) => Profile.findOne({ _id: profileId }),
     getPlayer: async (_, { playerId }) => Profile.findOne({ _id: playerId }),
@@ -20,8 +20,14 @@ const resolvers = {
     },
   },
   Mutation: {
-    addQuiz: async (_, { title, questions, createdBy }) =>
-      await Quiz.create({ title, questions, createdBy }),
+    addQuiz: async (_, { title, questions, createdBy }) => {
+      questions.forEach((question) => {
+        if (!question.questionText) {
+          throw new Error("Each question must have a questionText");
+        }
+      });
+      return await Quiz.create({ title, questions, createdBy });
+    },
     removeQuiz: async (_, { quizId }) => Quiz.findOneAndDelete({ _id: quizId }),
     addProfile: async (_, { username, email, password }) => {
       const profile = await Profile.create({ username, email, password });
