@@ -1,4 +1,5 @@
 import React from "react";
+import { motion } from 'framer-motion';
 
 const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
   const handleInputChange = (e, field, index) => {
@@ -14,7 +15,12 @@ const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
   };
 
   return (
-    <div style={{ marginBottom: "20px" }}>
+    <motion.div
+      className="question-form-container"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      style={{ marginBottom: "20px" }}
+    >
       <input
         type="text"
         placeholder={`Question ${questionIndex + 1}`}
@@ -38,7 +44,7 @@ const QuestionForm = ({ questionIndex, question, updateQuestion }) => {
         min="1"
         max="4"
       />
-    </div>
+    </motion.div>
   );
 };
 
