@@ -1,0 +1,10 @@
+{
+  "prod": {
+    "default-src": "'self'",
+    "script-src": ["'self'"],
+    "font-src": ["'self'", "*"],
+    "style-src": ["'self'", "https://*.googleapis.com", "'unsafe-inline'"],
+    "connect-src": ["'self'", "*"],
+    "img-src": ["'self'", "*"]
+  }
+}
