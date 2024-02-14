@@ -2,7 +2,12 @@
   "prod": {
     "default-src": ["'self'"],
     "script-src": ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-    "style-src": ["'self'", "https://*.googleapis.com", "'unsafe-inline'"],
+    "style-src": [
+      "'self'",
+      "https://*.googleapis.com",
+      "'unsafe-inline'",
+      "https://cdn.jsdelivr.net"
+    ],
     "font-src": ["'self'", "*"],
     "img-src": ["'self'", "*"],
     "connect-src": ["'self'", "*"]
