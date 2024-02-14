@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const secret = process.env.JWT_SECRET; // Replace with your actual secret key
+const secret = process.env.JWT_SECRET|| "123456789"; // Replace with your actual secret key
 const expiration = "1d";
 
 const AuthenticationError = new GraphQLError("Could not authenticate user.", {
