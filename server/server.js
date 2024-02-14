@@ -25,15 +25,16 @@ import Quiz from "./models/Quiz.js";
       helmet.contentSecurityPolicy({
         directives: {
           defaultSrc: ["'self'"],
-          scriptSrc: ["'self'", "'unsafe-inline'"],
+          scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
           styleSrc: ["'self'", "https://*.googleapis.com", "'unsafe-inline'"],
           fontSrc: ["'self'", "*"],
           imgSrc: ["'self'", "*"],
           connectSrc: ["'self'", "*"],
         },
-        reportOnly: true,
+        reportOnly: false,
       }),
     );
+
     app.use(express.static(path.join(__dirname, "client", "build")));
 
     await db();
