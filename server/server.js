@@ -9,9 +9,9 @@ import db from "./config/connection.js";
 // import initializeSocketIo from "./socketServer.js";
 import cors from "cors";
 import { authMiddleware } from "./utils/auth.js";
-import Profile from "./models/Profile.js";
-import Game from "./models/Game.js";
-import Quiz from "./models/Quiz.js";
+// import Profile from "./models/Profile.js";
+// import Game from "./models/Game.js";
+// import Quiz from "./models/Quiz.js";
 
 (async () => {
   try {
@@ -26,7 +26,12 @@ import Quiz from "./models/Quiz.js";
         directives: {
           defaultSrc: ["'self'"],
           scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
-          styleSrc: ["'self'", "https://*.googleapis.com", "'unsafe-inline'"],
+          styleSrc: [
+            "'self'",
+            "https://*.googleapis.com",
+            "'unsafe-inline'",
+            "https://cdn.jsdelivr.net",
+          ],
           fontSrc: ["'self'", "*"],
           imgSrc: ["'self'", "*"],
           connectSrc: ["'self'", "*"],
@@ -35,10 +40,14 @@ import Quiz from "./models/Quiz.js";
       }),
     );
 
-    app.use(express.static(path.join(__dirname, "client", "dist")));
+    app.use(
+      "/static",
+      express.static(path.join(__dirname, "..", "client", "dist")),
+    );
     app.get("*", (req, res) => {
-      res.sendFile(path.join(__dirname, "../client/dist/index.html"));
+      res.sendFile(path.join(__dirname, "..", "client", "dist", "index.html"));
     });
+
     await db();
     console.log("Connected to MongoDB");
 
@@ -53,9 +62,9 @@ import Quiz from "./models/Quiz.js";
 
     const httpServer = createServer(app);
     // initializeSocketIo(httpServer);
-    const profile = new Profile();
-    const game = new Game();
-    const quiz = new Quiz();
+    // const profile = new Profile();
+    // const game = new Game();
+    // const quiz = new Quiz();
     httpServer.listen(PORT, () => {
       console.log(`API server running on port ${PORT}!`);
       console.log(
