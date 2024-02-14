@@ -2,8 +2,6 @@
 node_modules/
 
 # Production build directory
-dist/
-build/
 
 # Compiled Static files
 /public/build/
