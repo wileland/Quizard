@@ -1,4 +1,5 @@
 import express from "express";
+import helmet from "helmet";
 import { createServer } from "http";
 import { ApolloServer } from "apollo-server-express";
 import path from "path";
@@ -19,6 +20,20 @@ import Quiz from "./models/Quiz.js";
     const PORT = process.env.PORT || 3001;
 
     app.use(cors());
+
+    app.use(
+      helmet.contentSecurityPolicy({
+        directives: {
+          defaultSrc: ["'self'"],
+          scriptSrc: ["'self'"],
+          styleSrc: ["'self'", "https://*.googleapis.com", "'unsafe-inline'"],
+          fontSrc: ["'self'", "*"],
+          imgSrc: ["'self'", "*"],
+          connectSrc: ["'self'", "*"],
+        },
+        reportOnly: false, // Set to true if you just want to report violations without enforcing the policy
+      }),
+    );
     app.use(express.static(path.join(__dirname, "client", "build")));
 
     await db();
