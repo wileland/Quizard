@@ -1,34 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-// import io from "socket.io-client";
 import { QUERY_QUIZZES } from "../utils/queries.js";
 import QuizList from "../components/QuizList.jsx";
 import CreateQuizButton from "../components/CreateQuizButton";
 
-// Assuming your server is running on the same host but different port
-// const socket = io("http://localhost:3001");
 const Dashboard = () => {
-  // Use Apollo's useQuery hook to fetch quizzes initially
-  const { data, loading, error} = useQuery(QUERY_QUIZZES);
-  console.log(data);
+  const { data, loading, error } = useQuery(QUERY_QUIZZES);
 
-  if (loading) return <p>Loading quizzes...</p>; // Display loading message while data is fetching
-
+  if (loading) return <p className="text-gray-600">Loading quizzes...</p>;
 
   return (
-    <main>
-      <h1>Welcome to the Quizard's Dashboard</h1>
-      <p>
+    <main className="container mx-auto mt-8 bg-yellow-100 p-8 rounded-md shadow-lg">
+      <h1 className="text-3xl font-bold mb-4 text-sky-800">Welcome to the Quizard's Dashboard</h1>
+      <p className="text-gray-700 mb-4">
         Here you can create, view, and manage your quizzes. Prepare to challenge
         the minds of your participants!
       </p>
-      <CreateQuizButton />
-      <h2>Created Quizzes</h2>
-      {/* Render quizzes fetched from GraphQL */}
+      <CreateQuizButton buttonStyles="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600" />
+      <h2 className="text-2xl font-bold mt-6 mb-4 text-teal-500">Created Quizzes</h2>
       {data && data?.quizzes.length > 0 ? (
         <QuizList quizzes={data?.quizzes} />
       ) : (
-        <p>No quizzes found.</p>
+        <p className="text-gray-600">No quizzes found.</p>
       )}
     </main>
   );
