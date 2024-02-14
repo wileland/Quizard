@@ -31,16 +31,18 @@ export const QUERY_ME = gql`
 `;
 
 export const QUERY_QUIZZES = gql`
-  query allQuizzes {
+  query quizzes {
     quizzes {
-      _id
       title
       questions {
         questionText
-        answerOptions
         correctAnswer
+        answerOptions {
+          option
+        }
       }
       isActive
+      _id
     }
   }
 `;

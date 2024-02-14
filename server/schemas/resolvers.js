@@ -6,7 +6,7 @@ import { signToken, AuthenticationError } from "../utils/auth.js";
 const resolvers = {
   Query: {
     getGame: async (_, { hostId }) => Game.findOne({ hostId }),
-    quizzes: async () => await Quiz.find().sort({ createdAt: -1 }),
+    quizzes: async () =>  Quiz.find,
     quiz: async (_, { quizId }) => await Quiz.findOne({ _id: quizId }),
     profiles: async () => Profile.find(),
     profile: async (_, { profileId }) => Profile.findOne({ _id: profileId }),

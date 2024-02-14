@@ -50,19 +50,20 @@ export const REMOVE_QUIZ = gql`
 `;
 
 export const ADD_QUIZ = gql`
-  mutation addQuiz($title: String!, $questions: [QuestionInput]!) {
-    addQuiz(title: $title, questions: $questions) {
-      _id
-      title
+  mutation addQuiz($title: String!, $questions: [QuestionInput]!, $createdBy: ID!) {
+    addQuiz(title: $title, questions: $questions, createdBy: $createdBy) {
       questions {
-        _id
         questionText
-        answerOptions
         correctAnswer
+        answerOptions {
+          option
+        }
       }
+      title
+      createdBy
     }
   }
-`;
+  `;
 
 export const ACTIVATE_QUIZ = gql`
   mutation activateQuiz($id: ID!, $isActive: Boolean!) {

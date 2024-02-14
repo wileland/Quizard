@@ -1,9 +1,9 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
 import { useMutation } from "@apollo/client";
 import { ADD_PROFILE } from "../utils/mutations";
 import Auth from "../utils/auth";
+import { motion } from 'framer-motion';
 
 const Signup = () => {
   const [formState, setFormState] = useState({
@@ -27,7 +27,6 @@ const Signup = () => {
   // submit form
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log(formState);
 
     try {
       const { data } = await addProfile({
@@ -42,61 +41,64 @@ const Signup = () => {
   };
 
   return (
-    <main className="flex-row justify-center mb-4">
-      <div className="col-12 col-lg-10">
-        <div className="card">
-          <h4 className="card-header bg-dark text-light p-2">Sign Up</h4>
-          <div className="card-body">
-            {data ? (
-              <p>
-                Success! You may now head{" "}
-                <Link to="/dashboard">back to the homepage.</Link>
-              </p>
-            ) : (
-              <form onSubmit={handleFormSubmit}>
-                <input
-                  className="form-input"
-                  placeholder="Your username"
-                  name="username"
-                  type="text"
-                  value={formState.username}
-                  onChange={handleChange}
-                />
-                <input
-                  className="form-input"
-                  placeholder="Your email"
-                  name="email"
-                  type="email"
-                  value={formState.email}
-                  onChange={handleChange}
-                />
-                <input
-                  className="form-input"
-                  placeholder="******"
-                  name="password"
-                  type="password"
-                  value={formState.password}
-                  onChange={handleChange}
-                />
-                <button
-                  className="btn btn-block btn-info"
-                  style={{ cursor: "pointer" }}
-                  type="submit"
-                >
-                  Submit
-                </button>
-              </form>
-            )}
-
-            {error && (
-              <div className="my-3 p-3 bg-danger text-white">
-                {error.message}
-              </div>
-            )}
-          </div>
-        </div>
+    <motion.main
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, y: -20 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col items-center justify-center h-screen bg-neon-purple text-white"
+    >
+      <div className="card bg-gray-900 text-white p-6 rounded-md shadow-md">
+        <h4 className="text-lg font-semibold mb-4">Sign Up</h4>
+        {data ? (
+          <p>
+            Success! You may now head{" "}
+            <Link to="/dashboard" className="text-neon-blue hover:underline">
+              back to the homepage.
+            </Link>
+          </p>
+        ) : (
+          <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
+            <input
+              className="input-field"
+              placeholder="Your username"
+              name="username"
+              type="text"
+              value={formState.username}
+              onChange={handleChange}
+            />
+            <input
+              className="input-field"
+              placeholder="Your email"
+              name="email"
+              type="email"
+              value={formState.email}
+              onChange={handleChange}
+            />
+            <input
+              className="input-field"
+              placeholder="Password"
+              name="password"
+              type="password"
+              value={formState.password}
+              onChange={handleChange}
+            />
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.2 }}
+              className="btn btn-info w-full"
+              type="submit"
+            >
+              Submit
+            </motion.button>
+          </form>
+        )}
+        {error && (
+          <p className="mt-4 text-red-500">{error.message}</p>
+        )}
       </div>
-    </main>
+    </motion.main>
   );
 };
 
