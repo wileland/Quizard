@@ -18,6 +18,8 @@ import { authMiddleware } from "./utils/auth.js";
     const __dirname = path.dirname(fileURLToPath(import.meta.url));
     const app = express();
     const PORT = process.env.PORT || 3001;
+    app.use(express.urlencoded({ extended: false }));
+    app.use(express.json());
 
     app.use(cors());
 
